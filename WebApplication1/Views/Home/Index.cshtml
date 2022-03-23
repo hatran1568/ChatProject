@@ -3,7 +3,19 @@
     Layout = "Shared/_LayoutHome.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="chat-body">
+
+    @for (int i = 0; i < 20; i++)
+    {
+
+        <div class="message">
+            <header>Anton</header>
+            <p>This is a test message</p>
+            <footer>16:00</footer>
+        </div>
+    }
+</div>
+<div class="chat-input">
+    <input type="text" />
+    <button>Send</button>
 </div>
