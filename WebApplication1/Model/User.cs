@@ -8,6 +8,7 @@ namespace ChatProject.Model
 {
     public class User : IdentityUser
     {
+        public string DisplayName { get; set; }
         public ICollection<ChatUser> Chats { get; set; }
 
     }

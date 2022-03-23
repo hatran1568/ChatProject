@@ -9,7 +9,7 @@ namespace ChatProject.ViewModels
     public class RegisterViewModel
     {
         [Required]
-        public string UserName { get; set; }
+        public string DisplayName { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }

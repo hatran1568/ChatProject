@@ -30,7 +30,8 @@ namespace ChatProject.Controllers
             {
                 var user = new User
                 {
-                    UserName = model.UserName,
+                    DisplayName = model.DisplayName,
+                    UserName = model.Email,
                     Email = model.Email,
                 };
 
@@ -48,7 +49,7 @@ namespace ChatProject.Controllers
                     ModelState.AddModelError("", error.Description);
                 }
 
-                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                //ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
 
             }
             return View(model);
