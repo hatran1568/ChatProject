@@ -19,7 +19,10 @@ namespace ChatProject.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var chats = _ctx.Chats
+            .Include(c => c.Users)
+            .ToList();
+            return View(chats);
         }
 
         public IActionResult Privacy()

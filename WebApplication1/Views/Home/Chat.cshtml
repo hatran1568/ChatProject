@@ -1,7 +1,10 @@
 ﻿@model Chat
+@{
+    Layout = "Shared/_LayoutHome.cshtml";
+}
 <div class="chat-body">
 
-    @foreach(var message in Model.Messages)
+    @foreach (var message in Model.Messages)
     {
 
         <div class="message">
@@ -11,8 +14,8 @@
         </div>
     }
 </div>
-    <form  class="chat-input" asp-controller="Home" asp-action="CreateMessage">
-        <input type="hidden" name="chatId" value="@Model.Id" />
-        <input type="text" name="message"/>
-        <button type="submit">Send</button>
-    </form>
+<form class="chat-input" asp-controller="Home" asp-action="CreateMessage">
+    <input type="hidden" name="chatId" value="@Model.Id" />
+    <input type="text" name="message" />
+    <button type="submit">Send</button>
+</form>
