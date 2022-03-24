@@ -9,9 +9,11 @@ using ChatProject.Models;
 using ChatProject.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChatProject.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -72,6 +74,13 @@ namespace ChatProject.Controllers
             _ctx.Messages.Add(msg);
             await _ctx.SaveChangesAsync();
             return RedirectToAction("Chat", new { id = chatId });
+        }
+        public IActionResult Find()
+        {
+            var users = _ctx.Users
+                        .Where(x => x.Id != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                        .ToList();
+            return View(users);
         }
     }
 }

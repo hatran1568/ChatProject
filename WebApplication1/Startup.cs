@@ -56,13 +56,14 @@ namespace ChatProject
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=User}/{action=Login}");
+                    pattern: "{controller=Account}/{action=Login}");
             });
             app.UseMvcWithDefaultRoute();
 
