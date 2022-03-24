@@ -21,7 +21,6 @@
         font-size: 18px;
         padding-top: 0.8rem;
         padding-left: 1rem;
-        width: 50px;
     }
 
 .main {
@@ -52,6 +51,7 @@
     border-radius: 5px;
     box-shadow: 0 1px 3px 1px #a763f1;
     background-color: #be73fe;
+    text-align: center;
 }
 
     .room-button > strong {
@@ -74,7 +74,7 @@
     background-color: #eee;
     flex-grow: 1;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     padding-bottom: 1rem;
     padding-left: 1rem;
     overflow: auto;
@@ -86,9 +86,9 @@
     flex-direction: row;
     margin-top: 0.25rem;
 }
-    /*.message:first-child{
+    .message:first-child{
     margin-top:auto;
-}*/
+}
     .message > * {
         padding: 0.2rem;
     }

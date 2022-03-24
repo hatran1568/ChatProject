@@ -3,19 +3,13 @@
     Layout = "Shared/_LayoutHome.cshtml";
 }
 
+@model IEnumerable<Chat>
+
 <div class="chat-body">
-
-    @for (int i = 0; i < 20; i++)
+    @foreach (var chat in Model)
     {
-
-        <div class="message">
-            <header>Anton</header>
-            <p>This is a test message</p>
-            <footer>16:00</footer>
-        </div>
+        <a class="room-button" asp-controller="Home" asp-action="JoinRoom" asp-route-id="@chat.Id">
+            @chat.Name
+        </a>
     }
-</div>
-<div class="chat-input">
-    <input type="text" />
-    <button>Send</button>
 </div>

@@ -15,20 +15,12 @@
         <a asp-controller="User" asp-action="Logout">Logout</a>
     </div>
     <div class="main">
-        <div class="side-menu">
-                <a class="room-button" asp-controller="Home" asp-action="Chat" asp-route-id="">
-                    Hi
-                </a>
-            
-            <a class="room-button" id="create-room-btn" href="">
-                <strong>+</strong>
-            </a>
-        </div>
+        <vc:room></vc:room>
         <div class="chat">
             @RenderBody()
         </div>
     </div>
-    <div class="modal">
+    <div class="modal" id="create-room-modal">
         <form asp-controller="Home" asp-action="CreateRoom" class="modal-body">
             <button type="button" class="close" onclick="closeModal()">X</button>
             <header>Create Room</header>
@@ -36,7 +28,7 @@
                 <input name="name">
             </div>
             <footer>
-                <button>Create</button>
+                <button onclick="closeModal()">Create</button>
             </footer>
         </form>
     </div>
