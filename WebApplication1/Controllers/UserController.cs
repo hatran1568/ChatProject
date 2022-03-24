@@ -74,5 +74,10 @@ namespace ChatProject.Controllers
             }
             return View(user);
         }
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "User");
+        }
     }
 }
