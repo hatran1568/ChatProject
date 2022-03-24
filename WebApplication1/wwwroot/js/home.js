@@ -1,9 +1,10 @@
 ﻿var createRoomBtn = document.getElementById('create-room-btn')
-var createRoomModal = document.getElementById('create-room-modal')
+var crateRoomModal = document.getElementById('create-room-modal')
 createRoomBtn.addEventListener('click', function () {
-    createRoomModal.classList.add('modal-active')
+    crateRoomModal.classList.add('modal-active')
+    event.preventDefault();
 })
 
 function closeModal() {
-    createRoomModal.classList.remove('modal-active')
+    crateRoomModal.classList.remove('modal-active')
 }
