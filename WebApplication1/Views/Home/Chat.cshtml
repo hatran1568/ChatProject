@@ -53,7 +53,6 @@
         var _connectionId = '';
         connection.on("ReceiveMessage", function (data, sender, date, userName) {
             console.log("messagereceived!")
-            //console.log(data)
             var currentUserName = document.getElementById("currentUser").value;
             var div1 = document.createElement("div");
             div1.classList.add("chat-message", "d-flex")
