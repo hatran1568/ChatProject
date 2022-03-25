@@ -15,11 +15,11 @@
     }
 </div>*@
 <div class="chat-body">
-    @foreach (var message in Model.Messages)
-    {
-        <ul class="list-unstyled">
+    <ul class="list-unstyled" id="msg-list">
+        @foreach (var message in Model.Messages)
+        {
             <li>
-                <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")" >
+                <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
                     <div class="message-content d-flex flex-column">
                         <div class="d-flex justify-content-between">
                             <span class="author">@message.User.DisplayName</span>
@@ -32,12 +32,13 @@
                     </div>
                 </div>
             </li>
-        </ul>
         }
+        </ul>
     </div>
 <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()">
     <input type="hidden" name="chatId" value="@Model.Id" />
-    <input type="hidden" name="roomName" value="@Model.Name"/>
+    <input type="hidden" id="currentUser" value="@User.Identity.Name" />
+    <input type="hidden" name="roomName" value="@Model.Name" />
     <input type="text" name="message" id="message-input" />
     <button type="submit">Send</button>
 </form>
@@ -50,23 +51,66 @@
             .withUrl("/chatHub")
             .build();
         var _connectionId = '';
-        connection.on("ReceiveMessage", function (data, sender, date) {
+        connection.on("ReceiveMessage", function (data, sender, date, userName) {
             console.log("messagereceived!")
-            console.log(data)
-            var message = document.createElement("div")
-            message.classList.add("message");
-            var header = document.createElement("header")
-            header.appendChild(document.createTextNode(sender))
-            var p = document.createElement("p")
-            p.appendChild(document.createTextNode(data.text))
-            var footer = document.createElement("footer")
-            footer.appendChild(document.createTextNode(date))
+            //console.log(data)
+            var currentUserName = document.getElementById("currentUser").value;
+            var div1 = document.createElement("div");
+            div1.classList.add("chat-message", "d-flex")
+            if (userName == currentUserName) div1.classList.add("ismine");
+            var div2 = document.createElement("div")
+            div2.classList.add("message-content", "d-flex", "flex-column")
+            var div3 = document.createElement("div")
+            div3.classList.add("d-flex", "justify-content-between")
 
-            message.appendChild(header);
-            message.appendChild(p);
-            message.appendChild(footer);
+            var spanAuthor = document.createElement("span");
+            spanAuthor.classList.add("author")
+            spanAuthor.appendChild(document.createTextNode(sender))
+            console.log("spanauthor created :" + spanAuthor.textContent)
 
-            document.querySelector('.chat-body').append(message);
+            var spanTimestamp = document.createElement("span");
+            spanTimestamp.classList.add("timestamp")
+            var timeIcon = document.createElement("i")
+            timeIcon.classList.add("far", "fa-clock")
+            var childSpan = document.createElement("span");
+            childSpan.appendChild(document.createTextNode(date))
+            console.log("childSpan created :" + childSpan.textContent)
+            spanTimestamp.appendChild(timeIcon);
+            spanTimestamp.appendChild(childSpan);
+
+            div3.appendChild(spanAuthor)
+            div3.appendChild(spanTimestamp)
+
+            div2.appendChild(div3);
+
+            var spanContent = document.createElement("span");
+            spanContent.classList.add("content")
+            spanContent.appendChild(document.createTextNode(data.text))
+            console.log("spanContent created :" + spanContent.textContent)
+
+            div2.appendChild(spanContent)
+
+            div1.appendChild(div2)
+            var li = document.createElement("li")
+            li.appendChild(div1)
+            var list = document.getElementById("msg-list")
+            list.appendChild(li)
+            //document.querySelector('.msg-list').append(li)
+
+            //var message = document.createElement("div")
+            //message.classList.add("message");
+            //var header = document.createElement("header")
+            //header.appendChild(document.createTextNode(sender))
+            //var p = document.createElement("p")
+            //p.appendChild(document.createTextNode(data.text))
+            //var footer = document.createElement("footer")
+            //footer.appendChild(document.createTextNode(date))
+
+            //message.appendChild(header);
+            //message.appendChild(p);
+            //message.appendChild(footer);
+
+            //document.querySelector('.chat-body').append(message);
         })
 
         var joinRoom = function () {

@@ -55,7 +55,7 @@ namespace ChatProject.Controllers
             ctx.Messages.Add(msg);
             await ctx.SaveChangesAsync();
             await _chat.Clients.Groups(roomName)
-                .SendAsync("ReceiveMessage", msg, user.DisplayName, date);
+                .SendAsync("ReceiveMessage", msg, user.DisplayName, date, user.UserName);
             return Ok();
         }
     }
