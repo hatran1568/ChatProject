@@ -2,7 +2,7 @@
 @{
     Layout = "Shared/_LayoutHome.cshtml";
 }
-<div class="chat-body">
+@*<div class="chat-body">
 
     @foreach (var message in Model.Messages)
     {
@@ -13,9 +13,98 @@
             <footer>@message.Timestamp</footer>
         </div>
     }
-</div>
-<form class="chat-input" asp-controller="Home" asp-action="CreateMessage">
+</div>*@
+<div class="chat-body">
+    @foreach (var message in Model.Messages)
+    {
+        <ul class="list-unstyled">
+            <li>
+                <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")" >
+                    <div class="message-content d-flex flex-column">
+                        <div class="d-flex justify-content-between">
+                            <span class="author">@message.User.DisplayName</span>
+                            <span class="timestamp">
+                                <i class="far fa-clock"></i>
+                                <span>@message.Timestamp</span>
+                            </span>
+                        </div>
+                        <span class="content">@message.Text</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        }
+    </div>
+<form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()">
     <input type="hidden" name="chatId" value="@Model.Id" />
-    <input type="text" name="message" />
+    <input type="hidden" name="roomName" value="@Model.Name"/>
+    <input type="text" name="message" id="message-input" />
     <button type="submit">Send</button>
 </form>
+
+@section scripts{
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+        var _connectionId = '';
+        connection.on("ReceiveMessage", function (data, sender, date) {
+            console.log("messagereceived!")
+            console.log(data)
+            var message = document.createElement("div")
+            message.classList.add("message");
+            var header = document.createElement("header")
+            header.appendChild(document.createTextNode(sender))
+            var p = document.createElement("p")
+            p.appendChild(document.createTextNode(data.text))
+            var footer = document.createElement("footer")
+            footer.appendChild(document.createTextNode(date))
+
+            message.appendChild(header);
+            message.appendChild(p);
+            message.appendChild(footer);
+
+            document.querySelector('.chat-body').append(message);
+        })
+
+        var joinRoom = function () {
+            var url = '/Chat/JoinRoom/' + _connectionId + '/@Model.Name';
+            axios.post(url, null)
+                .then(res => {
+                    console.log("Room Joined!", res);
+                })
+                .catch(err => {
+                    console.error("Failed to join room!", err);
+                })
+        }
+
+        connection.start()
+            .then(function () {
+                connection.invoke("getConnectionId")
+                    .then(function (connectionId) {
+                        _connectionId = connectionId
+                        joinRoom();
+                    })
+            })
+            .catch(function (err) {
+                console.log(err)
+            })
+
+        var form = null;
+        var sendMessage = function () {
+            event.preventDefault();
+            var data = new FormData(event.target);
+            document.getElementById('message-input').value = '';
+            axios.post('/Chat/SendMessage/', data)
+                .then(res => {
+                    console.log("Message Sent!")
+                })
+                .catch(err => {
+                    console.log("Failed to send message")
+                })
+            //event.preventDefault();
+        }
+    </script>
+}

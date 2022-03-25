@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChatProject.Model;
+using ChatProject.Hubs;
 
 namespace ChatProject
 {
@@ -55,7 +56,6 @@ namespace ChatProject
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -67,6 +67,10 @@ namespace ChatProject
             });
             app.UseMvcWithDefaultRoute();
 
+            app.UseEndpoints(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
         }
     }
 }

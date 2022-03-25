@@ -21,9 +21,11 @@ namespace ChatProject.Controllers
 
         public IActionResult Index()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chats = _ctx.Chats
-            .Include(c => c.Users)
-            .ToList();
+                .Include(x => x.Users)
+                .Where(x => !x.Users.Any(y => y.UserId == userId))
+                .ToList();
             return View(chats);
         }
 
@@ -47,9 +49,25 @@ namespace ChatProject.Controllers
                 Name = name,
                 Type = ChatType.Room
             };
+            chat.Users.Add(new ChatUser
+            {
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            });
             _ctx.Chats.Add(chat);
             await _ctx.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> JoinRoom(int id)
+        {
+            var chatUser = new ChatUser
+            {
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                ChatId = id
+            };
+            _ctx.ChatUsers.Add(chatUser);
+            await _ctx.SaveChangesAsync();
+            return RedirectToAction("Chat", new { id = id });
         }
         [HttpGet("{id}")]
         public IActionResult Chat(int id)
@@ -60,15 +78,15 @@ namespace ChatProject.Controllers
                 .FirstOrDefault(x => x.Id == id);
             return View(chat);
         }
-
         [HttpPost]
         public async Task<IActionResult> CreateMessage(int chatId, string message)
         {
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var msg = new Message
             {
                 ChatID = chatId,
                 Text = message,
-                UserID = "5f324953-2d71-403e-b83e-87f1c0303f5e",
+                UserID = userId,
                 Timestamp = DateTime.Now
             };
             _ctx.Messages.Add(msg);
