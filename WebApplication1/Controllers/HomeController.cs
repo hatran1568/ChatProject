@@ -24,8 +24,7 @@ namespace ChatProject.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chats = _ctx.Chats
                 .Include(x => x.Users)
-                .Where(x => !x.Users
-                .Any(y => y.UserId == userId))
+                .Where(x => !x.Users.Any(y => y.UserId == userId))
                 .ToList();
             return View(chats);
         }

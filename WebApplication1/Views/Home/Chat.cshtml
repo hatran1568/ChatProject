@@ -2,7 +2,7 @@
 @{
     Layout = "Shared/_LayoutHome.cshtml";
 }
-<div class="chat-body">
+@*<div class="chat-body">
 
     @foreach (var message in Model.Messages)
     {
@@ -13,7 +13,28 @@
             <footer>@message.Timestamp</footer>
         </div>
     }
-</div>
+</div>*@
+<div class="chat-body">
+    @foreach (var message in Model.Messages)
+    {
+        <ul class="list-unstyled">
+            <li>
+                <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")" >
+                    <div class="message-content d-flex flex-column">
+                        <div class="d-flex justify-content-between">
+                            <span class="author">@message.User.DisplayName</span>
+                            <span class="timestamp">
+                                <i class="far fa-clock"></i>
+                                <span>@message.Timestamp</span>
+                            </span>
+                        </div>
+                        <span class="content">@message.Text</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        }
+    </div>
 <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()">
     <input type="hidden" name="chatId" value="@Model.Id" />
     <input type="hidden" name="roomName" value="@Model.Name"/>

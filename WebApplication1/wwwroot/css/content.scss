@@ -1,0 +1,73 @@
+﻿.chat-message {
+    margin: 10px;
+    min-width: 200px;
+
+    .message-content {
+        background: #f5f5f5;
+        padding: 3px 8px;
+        border: 1px solid #eee;
+        border-radius: 2px;
+        color: #777;
+        min-width: 220px;
+        max-width: 500px;
+
+        img .post-image {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        span {
+            color: #777;
+        }
+
+        .author {
+            color: #1a6baa;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .content {
+            display: block;
+            padding: 2px 0;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #999;
+            float: right;
+            line-height: 21px;
+            margin: 0 5px;
+        }
+    }
+
+    .message-avatar {
+        width: 40px;
+        height: 40px;
+        float: left;
+        margin-right: 10px;
+        border-radius: 21px;
+    }
+}
+.ismine {
+    flex-direction: row-reverse;
+
+    .message-content {
+        background: #8abde6;
+
+        .author,
+        .timestamp,
+        .timestamp span,
+        .content {
+            color: white;
+        }
+
+        div {
+            flex-direction: row-reverse;
+        }
+    }
+
+    .message-avatar {
+        margin-right: 0;
+        margin-left: 10px;
+    }
+}
