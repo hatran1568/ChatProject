@@ -76,7 +76,8 @@ namespace ChatProject.Controllers
                 .Include(x => x.Messages)
                 .ThenInclude(x => x.User)
                 .FirstOrDefault(x => x.Id == id);
-            return View(chat);
+            if (chat != null) return View(chat);
+            else return RedirectToAction("Index");
         }
         [HttpPost]
         public async Task<IActionResult> CreateMessage(int chatId, string message)

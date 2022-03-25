@@ -14,6 +14,7 @@
         </div>
     }
 </div>*@
+<link href="~/css/emojionearea.min.css" rel="stylesheet" />
 <div class="chat-body">
     <ul class="list-unstyled" id="msg-list">
         @foreach (var message in Model.Messages)
@@ -35,18 +36,36 @@
         }
         </ul>
     </div>
-<form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()">
+<form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform">
     <input type="hidden" name="chatId" value="@Model.Id" />
     <input type="hidden" id="currentUser" value="@User.Identity.Name" />
     <input type="hidden" name="roomName" value="@Model.Name" />
-    <input type="text" name="message" id="message-input" />
+    <input type="text" name="message" id="message-input" style="display: none;"/>
     <button type="submit">Send</button>
 </form>
 
 @section scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="~/js/emojionearea.min.js"></script>
     <script>
+        $(document).ready(function () {
+            var el = $("#message-input").emojioneArea({
+                pickerPosition: "top",
+                placeholder: "Type something here",
+                filtersPosition: "bottom",
+                inline: true,
+                events: {
+                    keyup: function (editor, event) {
+                        if (event.keyCode === 13) {
+                            console.log("13");
+                            //sendMessage();
+                        }
+                    }
+                }
+            });
+        })
         var connection = new signalR.HubConnectionBuilder()
             .withUrl("/chatHub")
             .build();
@@ -65,7 +84,6 @@
             var spanAuthor = document.createElement("span");
             spanAuthor.classList.add("author")
             spanAuthor.appendChild(document.createTextNode(sender))
-            console.log("spanauthor created :" + spanAuthor.textContent)
 
             var spanTimestamp = document.createElement("span");
             spanTimestamp.classList.add("timestamp")
@@ -73,7 +91,7 @@
             timeIcon.classList.add("far", "fa-clock")
             var childSpan = document.createElement("span");
             childSpan.appendChild(document.createTextNode(date))
-            console.log("childSpan created :" + childSpan.textContent)
+
             spanTimestamp.appendChild(timeIcon);
             spanTimestamp.appendChild(childSpan);
 
@@ -85,7 +103,6 @@
             var spanContent = document.createElement("span");
             spanContent.classList.add("content")
             spanContent.appendChild(document.createTextNode(data.text))
-            console.log("spanContent created :" + spanContent.textContent)
 
             div2.appendChild(spanContent)
 
@@ -94,6 +111,8 @@
             li.appendChild(div1)
             var list = document.getElementById("msg-list")
             list.appendChild(li)
+            $(".chat-body").animate({ scrollTop: $(".chat-body")[0].scrollHeight }, 500);
+            //scrollToBottom()
             //document.querySelector('.msg-list').append(li)
 
             //var message = document.createElement("div")
@@ -129,6 +148,7 @@
                     .then(function (connectionId) {
                         _connectionId = connectionId
                         joinRoom();
+                        $(".chat-body").animate({ scrollTop: $(".chat-body")[0].scrollHeight }, 100);
                     })
             })
             .catch(function (err) {
@@ -136,10 +156,10 @@
             })
 
         var form = null;
-        var sendMessage = function () {
+        function sendMessage() {
             event.preventDefault();
             var data = new FormData(event.target);
-            document.getElementById('message-input').value = '';
+            $(".emojionearea-editor").html('');
             axios.post('/Chat/SendMessage/', data)
                 .then(res => {
                     console.log("Message Sent!")
