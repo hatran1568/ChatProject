@@ -9,11 +9,11 @@ using ChatProject.ViewModels;
 
 namespace ChatProject.Controllers
 {
-    public class UserController : Controller
+    public class AccountController : Controller
     {
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -53,7 +53,6 @@ namespace ChatProject.Controllers
 
             }
             return View(model);
-            //return RedirectToAction("Register", "Account");
         }
         [HttpGet]
         public IActionResult Login() => View();
@@ -69,7 +68,8 @@ namespace ChatProject.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+               
+                ModelState.AddModelError(string.Empty, "Wrong email or password");
 
             }
             return View(user);
@@ -77,7 +77,7 @@ namespace ChatProject.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("Login", "Account");
         }
     }
 }

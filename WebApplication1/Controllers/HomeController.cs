@@ -9,9 +9,11 @@ using ChatProject.Models;
 using ChatProject.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChatProject.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -73,6 +75,40 @@ namespace ChatProject.Controllers
             _ctx.Messages.Add(msg);
             await _ctx.SaveChangesAsync();
             return RedirectToAction("Chat", new { id = chatId });
+        }
+        public IActionResult Find()
+        {
+            var users = _ctx.Users
+                        .Where(x => x.Id != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                        .ToList();
+            return View(users);
+        }
+        public IActionResult FindByName(string search)
+        {
+            var users = _ctx.Users
+                        .Where(x => x.Id != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                        .Where(x => x.DisplayName.Contains(search) || x.UserName.Contains(search))
+                        .ToList();
+            return Json(users);
+
+        }
+        public async Task<IActionResult> CreatePrivateRoom(string userId)
+        {
+            var chat = new Chat
+            {
+                Type = ChatType.Private
+            };
+            chat.Users.Add(new ChatUser
+            {
+                UserId = userId
+            });
+            chat.Users.Add(new ChatUser
+            {
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value
+            });
+            _ctx.Chats.Add(chat);
+            await _ctx.SaveChangesAsync();
+            return RedirectToAction("Chat", new { id = chat.Id });
         }
     }
 }

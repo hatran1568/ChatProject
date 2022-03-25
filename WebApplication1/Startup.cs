@@ -62,7 +62,7 @@ namespace ChatProject
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=User}/{action=Login}");
+                    pattern: "{controller=Account}/{action=Login}");
             });
             app.UseMvcWithDefaultRoute();
 
