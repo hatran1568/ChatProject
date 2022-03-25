@@ -1,6 +1,7 @@
 ﻿using ChatProject.Hubs;
 using ChatProject.Model;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -38,9 +39,11 @@ namespace ChatProject.Controllers
             string message, 
             int chatId,
             string roomName
-            ,[FromServices] AppDbContext ctx)
+            ,[FromServices] AppDbContext ctx,
+            [FromServices] UserManager<User> _userManager)
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
             var msg = new Message
             {
                 ChatID = chatId,
@@ -48,10 +51,11 @@ namespace ChatProject.Controllers
                 UserID = userId,
                 Timestamp = DateTime.Now
             };
+            var date = msg.Timestamp.ToString("dd/MM/yyyy hh:mm:ss");
             ctx.Messages.Add(msg);
             await ctx.SaveChangesAsync();
             await _chat.Clients.Groups(roomName)
-                .SendAsync("ReceiveMessage", msg);
+                .SendAsync("ReceiveMessage", msg, user.DisplayName, date);
             return Ok();
         }
     }
