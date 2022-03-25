@@ -15,7 +15,9 @@
         <a asp-controller="Account" asp-action="Logout">Logout</a>
     </div>
     <div class="main">
-        <vc:room></vc:room>
+        @if (User.Identity.IsAuthenticated) {
+            <vc:room></vc:room>
+        }
         <div class="chat">
             @RenderBody()
         </div>
