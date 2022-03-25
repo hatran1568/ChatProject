@@ -62,11 +62,12 @@ namespace ChatProject.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMessage(int chatId, string message)
         {
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var msg = new Message
             {
                 ChatID = chatId,
                 Text = message,
-                UserID = "5f324953-2d71-403e-b83e-87f1c0303f5e",
+                UserID = userId,
                 Timestamp = DateTime.Now
             };
             _ctx.Messages.Add(msg);
