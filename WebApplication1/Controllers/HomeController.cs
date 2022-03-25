@@ -127,5 +127,18 @@ namespace ChatProject.Controllers
             await _ctx.SaveChangesAsync();
             return RedirectToAction("Chat", new { id = chat.Id });
         }
+
+        public IActionResult Private()
+        {
+            var chats = _ctx.Chats
+                            .Include(x => x.Users)
+                            .ThenInclude(x => x.User)
+                            .Where(x => x.Type == ChatType.Private
+                                            && x.Users
+                                            .Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                            .ToList();
+            return View(chats);
+        }
+
     }
 }
