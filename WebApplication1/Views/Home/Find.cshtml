@@ -15,14 +15,7 @@
 <div id="userResult">
 
 </div>
-@foreach (var user in Model)
-{
-    <div>
-        @*<button class="room-button" asp-controller="Home" asp-action="CreatePrivateRoom" asp-route-userId="@user.Id">
-            @user.DisplayName
-        </button>*@
-    </div>
-}
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
@@ -54,9 +47,6 @@
                 }
 
                 for (var x = 0; x < data.length; x++) {
-                    @*var user = document.createElement("a");
-                    user.href = "/Home/CreatePrivateRoom?userId=" + data[x].id;
-                    user.innerHTML = data[x].displayName;*@
                     var user = document.createElement("button");
                     user.innerHTML = data[x].displayName;
                     user.className = "room-button";
