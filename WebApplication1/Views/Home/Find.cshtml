@@ -54,9 +54,13 @@
                 }
 
                 for (var x = 0; x < data.length; x++) {
-                    var user = document.createElement("a");
+                    @*var user = document.createElement("a");
                     user.href = "/Home/CreatePrivateRoom?userId=" + data[x].id;
+                    user.innerHTML = data[x].displayName;*@
+                    var user = document.createElement("button");
                     user.innerHTML = data[x].displayName;
+                    user.className = "room-button";
+                    user.onclick = "location.href=/Home/CreatePrivateRoom?userId=" + data[x].id;
                     userResult.appendChild(user);
 
                     // updateListing(data[x]);
