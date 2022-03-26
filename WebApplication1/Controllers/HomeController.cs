@@ -112,6 +112,17 @@ namespace ChatProject.Controllers
         }
         public async Task<IActionResult> CreatePrivateRoom(string userId)
         {
+            List<ChatUser> duplicateChat = _ctx.ChatUsers.Where(x => x.User.Id == userId || x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                            .ToList();
+            List<int> _chats = duplicateChat.GroupBy(x => x.ChatId)
+                 .Where(x => x.Count() == 2)
+                 .Select(x => x.Key)
+                 .ToList();
+            if (_chats.Count() > 0)
+            {
+                int existingChat = _chats.First();
+                return RedirectToAction("Chat", new { id = existingChat });
+            }
             var chat = new Chat
             {
                 Type = ChatType.Private

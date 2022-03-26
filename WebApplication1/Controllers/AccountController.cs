@@ -64,13 +64,17 @@ namespace ChatProject.Controllers
                     ModelState.AddModelError("", error.Description);
                 }
 
-                //ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
 
             }
             return View(model);
         }
         [HttpGet]
-        public IActionResult Login() => View();
+        public IActionResult Login()
+        {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+            return View();
+        }
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel user)
         {
