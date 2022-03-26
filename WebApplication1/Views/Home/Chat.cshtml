@@ -4,16 +4,16 @@
 }
 @*<div class="chat-body">
 
-    @foreach (var message in Model.Messages)
-    {
+        @foreach (var message in Model.Messages)
+        {
 
-        <div class="message">
-            <header>@message.User.DisplayName</header>
-            <p>@message.Text</p>
-            <footer>@message.Timestamp</footer>
-        </div>
-    }
-</div>*@
+            <div class="message">
+                <header>@message.User.DisplayName</header>
+                <p>@message.Text</p>
+                <footer>@message.Timestamp</footer>
+            </div>
+        }
+    </div>*@
 <link href="~/css/emojionearea.min.css" rel="stylesheet" />
 <div class="chat-body">
     <ul class="list-unstyled" id="msg-list">
@@ -21,6 +21,9 @@
         {
             <li>
                 <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
+                    <div class="left-side">
+                        <img src="/images/@message.User.Avatar" class="message-avatar"/>
+                    </div>
                     <div class="message-content d-flex flex-column">
                         <div class="d-flex justify-content-between">
                             <span class="author">@message.User.DisplayName</span>
@@ -34,13 +37,13 @@
                 </div>
             </li>
         }
-        </ul>
-    </div>
+    </ul>
+</div>
 <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform">
     <input type="hidden" name="chatId" value="@Model.Id" />
     <input type="hidden" id="currentUser" value="@User.Identity.Name" />
     <input type="hidden" name="roomName" value="@Model.Name" />
-    <input type="text" name="message" id="message-input" style="display: none;"/>
+    <input type="text" name="message" id="message-input" style="display: none;" />
     <button type="submit">Send</button>
 </form>
 
@@ -70,12 +73,23 @@
             .withUrl("/chatHub")
             .build();
         var _connectionId = '';
-        connection.on("ReceiveMessage", function (data, sender, date, userName) {
+        connection.on("ReceiveMessage", function (data, sender, date) {
             console.log("messagereceived!")
             var currentUserName = document.getElementById("currentUser").value;
             var div1 = document.createElement("div");
             div1.classList.add("chat-message", "d-flex")
-            if (userName == currentUserName) div1.classList.add("ismine");
+            if (sender.userName == currentUserName) div1.classList.add("ismine");
+
+            var divImg = document.createElement("div");
+            divImg.classList.add("left-side");
+
+            var avaimg = document.createElement("img");
+            avaimg.src = "/images/" + sender.avatar;
+            avaimg.classList.add("message-avatar");
+            console.log("src: " + avaimg.src);
+            divImg.appendChild(avaimg);
+            div1.appendChild(divImg);
+
             var div2 = document.createElement("div")
             div2.classList.add("message-content", "d-flex", "flex-column")
             var div3 = document.createElement("div")
@@ -83,7 +97,7 @@
 
             var spanAuthor = document.createElement("span");
             spanAuthor.classList.add("author")
-            spanAuthor.appendChild(document.createTextNode(sender))
+            spanAuthor.appendChild(document.createTextNode(sender.displayName))
 
             var spanTimestamp = document.createElement("span");
             spanTimestamp.classList.add("timestamp")

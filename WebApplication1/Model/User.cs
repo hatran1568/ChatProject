@@ -10,6 +10,6 @@ namespace ChatProject.Model
     {
         public string DisplayName { get; set; }
         public ICollection<ChatUser> Chats { get; set; }
-
+        public string Avatar { get; set; }
     }
 }

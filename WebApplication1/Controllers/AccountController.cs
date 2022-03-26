@@ -6,6 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using ChatProject.Model;
 using ChatProject.ViewModels;
+using System.Web;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ChatProject.Controllers
 {
@@ -24,15 +28,26 @@ namespace ChatProject.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model, [FromServices] IHostingEnvironment hostingEnvironment)
         {
             if (ModelState.IsValid)
             {
+                string uniqueFileName = null;
+                if (model.Avatar != null)
+                {
+                    string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Avatar.FileName;
+                    using (var fs = new FileStream(Path.Combine(uploadsFolder, uniqueFileName), FileMode.Create))
+                    {
+                        await model.Avatar.CopyToAsync(fs);
+                    }
+                }
                 var user = new User
                 {
                     DisplayName = model.DisplayName,
                     UserName = model.Email,
                     Email = model.Email,
+                    Avatar = uniqueFileName
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
