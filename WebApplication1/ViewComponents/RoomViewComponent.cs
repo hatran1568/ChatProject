@@ -21,6 +21,8 @@ namespace ChatProject.ViewComponents
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chat = _ctx.ChatUsers
                 .Include(x => x.Chat)
+                .ThenInclude(x => x.Users)
+                .ThenInclude(x => x.User)
                 .Where(x => x.UserId == userId)
                 .Select(x => x.Chat)
                 .ToList();

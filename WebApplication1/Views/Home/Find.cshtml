@@ -51,13 +51,10 @@
                     var user = document.createElement("button");
                     user.innerHTML = data[x].displayName;
                     user.className = "room-button";
-                    //user.onclick = "location.href=/Home/CreatePrivateRoom?userId=" + data[x].id;
                     user.onclick = function () {
                         window.location.href = "/Home/CreatePrivateRoom?userId=" + curId;
                     }
                     userResult.appendChild(user);
-
-                    // updateListing(data[x]);
                 }
             }
         })

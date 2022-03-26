@@ -1,10 +1,21 @@
 ﻿@model IEnumerable<Chat>
-
+@using System.Security.Claims
+@{
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+}
 <div class="side-menu">
     @foreach (var chat in Model)
     {
         <a class="room-button" asp-controller="Home" asp-action="Chat" asp-route-id="@chat.Id">
-            @chat.Name
+            @if (chat.Name != null)
+            {
+                @chat.Name
+
+            }
+            else
+            {
+                @chat.Users.FirstOrDefault(x => x.UserId != userId).User.DisplayName
+            }
         </a>
     }
     <a class="room-button" id="create-room-btn" href="">
