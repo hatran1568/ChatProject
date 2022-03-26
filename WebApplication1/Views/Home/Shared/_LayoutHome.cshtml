@@ -15,14 +15,17 @@
         <a asp-controller="Home" asp-action="Private">Private</a>
         <a asp-controller="Account" asp-action="Logout">Logout</a>
     </div>
-    <div class="main">
-        @if (User.Identity.IsAuthenticated) {
+    @RenderBody()
+
+    @*<div class="main">
+        @if (User.Identity.IsAuthenticated)
+        {
             <vc:room></vc:room>
         }
         <div class="chat">
             @RenderBody()
         </div>
-    </div>
+    </div>*@
     <div class="modal" id="create-room-modal">
         <form asp-controller="Home" asp-action="CreateRoom" class="modal-body">
             <button type="button" class="close" onclick="closeModal()">X</button>

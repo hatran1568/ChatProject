@@ -16,7 +16,7 @@ namespace ChatProject.ViewComponents
         {
             _ctx = ctx;
         }
-        public IViewComponentResult Invoke()
+        public IViewComponentResult Invoke(ChatType chatType)
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chat = _ctx.ChatUsers
@@ -24,6 +24,7 @@ namespace ChatProject.ViewComponents
                 .ThenInclude(x => x.Users)
                 .ThenInclude(x => x.User)
                 .Where(x => x.UserId == userId)
+                .Where(x => x.Chat.Type == chatType)
                 .Select(x => x.Chat)
                 .ToList();
             return View(chat);

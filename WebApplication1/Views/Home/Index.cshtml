@@ -4,12 +4,21 @@
 }
 
 @model IEnumerable<Chat>
-
-<div class="chat-body">
-    @foreach (var chat in Model)
+<div class="main">
+    @if (User.Identity.IsAuthenticated)
     {
-        <a class="room-button" asp-controller="Home" asp-action="JoinRoom" asp-route-id="@chat.Id">
-            @chat.Name
-        </a>
+        <vc:room
+                 chat-type="@ChatType.Room">
+        </vc:room>
     }
+    <div class="chat">
+        <div class="chat-body">
+            @foreach (var chat in Model)
+            {
+                <a class="room-button" asp-controller="Home" asp-action="JoinRoom" asp-route-id="@chat.Id">
+                    @chat.Name
+                </a>
+            }
+        </div>
+    </div>
 </div>
