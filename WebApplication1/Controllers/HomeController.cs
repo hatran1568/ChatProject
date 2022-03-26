@@ -60,6 +60,13 @@ namespace ChatProject.Controllers
         [HttpGet]
         public async Task<IActionResult> JoinRoom(int id)
         {
+            Chat _chat = _ctx.Chats
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.Id == id);
+            if (_chat.Users.FirstOrDefault(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value) != null)
+            {
+                return RedirectToAction("Chat", new { id = id });
+            }
             var chatUser = new ChatUser
             {
                 UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
@@ -105,13 +112,21 @@ namespace ChatProject.Controllers
                         .ToList();
             return View(users);
         }
-        public IActionResult FindByName(string search)
+        public IActionResult FindUserByName(string search)
         {
             var users = _ctx.Users
                         .Where(x => x.Id != User.FindFirst(ClaimTypes.NameIdentifier).Value)
                         .Where(x => x.DisplayName.Contains(search) || x.UserName.Contains(search))
                         .ToList();
             return Json(users);
+
+        }
+        public IActionResult FindRoomByName(string search)
+        {
+            var rooms = _ctx.Chats
+                        .Where(x => x.Type == ChatType.Room && x.Name.Contains(search))
+                        .ToList();
+            return Json(rooms);
 
         }
         public async Task<IActionResult> CreatePrivateRoom(string userId)
