@@ -72,11 +72,15 @@ namespace ChatProject.Controllers
         [HttpGet("{id}")]
         public IActionResult Chat(int id)
         {
-            var chat = _ctx.Chats
+            Chat chat = _ctx.Chats
                 .Include(x => x.Messages)
                 .ThenInclude(x => x.User)
                 .FirstOrDefault(x => x.Id == id);
-            if (chat != null) return View(chat);
+            if (chat != null)
+            {
+                ViewBag.ChatType = chat.Type;
+                return View(chat);
+            }
             else return RedirectToAction("Index");
         }
         [HttpPost]
