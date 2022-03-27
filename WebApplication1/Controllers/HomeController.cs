@@ -21,11 +21,19 @@ namespace ChatProject.Controllers
 
         public IActionResult Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            /*var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chats = _ctx.Chats
                 .Include(x => x.Users)
                 .Where(x => !x.Users.Any(y => y.UserId == userId))
                 .ToList();
+            return View(chats);*/
+            var chats = _ctx.Chats
+                           .Include(x => x.Users)
+                           .ThenInclude(x => x.User)
+                           .Where(x => x.Type == ChatType.Room
+                                           && x.Users
+                                           .Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                           .ToList();
             return View(chats);
         }
 

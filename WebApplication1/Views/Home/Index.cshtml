@@ -24,7 +24,12 @@
                 </div>
             </div>
             <div id="userResult">
-
+                @foreach (var chat in Model)
+                {
+                    <a class="room-button" asp-controller="Home" asp-action="Chat" asp-route-id="@chat.Id">
+                            @chat.Name
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -60,12 +65,13 @@
 
                 for (var x = 0; x < data.length; x++) {
                     var curId = data[x].id;
-                    var user = document.createElement("button");
+                    var user = document.createElement("a");
                     user.innerHTML = data[x].name;
                     user.className = "room-button";
-                    user.onclick = function () {
+                    user.href = "/Home/JoinRoom?id=" + curId;
+                    @*user.onclick = function () {
                         window.location.href = "/Home/JoinRoom?id=" + curId;
-                    }
+                    }*@
                     userResult.appendChild(user);
                 }
             }
