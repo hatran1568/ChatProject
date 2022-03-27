@@ -2,12 +2,12 @@
 
 namespace ChatProject.Migrations
 {
-    public partial class Type : Migration
+    public partial class MessageType : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "Type",
+                name: "MessageType",
                 table: "Messages",
                 type: "int",
                 nullable: false,
@@ -17,7 +17,7 @@ namespace ChatProject.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Type",
+                name: "MessageType",
                 table: "Messages");
         }
     }
