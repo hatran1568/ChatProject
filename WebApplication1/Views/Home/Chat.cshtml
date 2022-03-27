@@ -61,10 +61,14 @@
                                         </div>
                                     </li>
                                 }
+                                else if (message.Type == MessageType.Notification)
+                                {
 
-                                @*<li>
-                <div class="noti-message" style="color: dimgrey; text-align:center;">User has left the room</div>
-            </li>*@
+                                    <li>
+                                        <div class="noti-message" style="color: dimgrey; text-align:center;">User has left the room</div>
+                                    </li>
+                                }
+
                             }
                         </ul>
                     </div>
