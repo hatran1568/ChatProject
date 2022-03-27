@@ -22,23 +22,23 @@ namespace ChatProject.Controllers
         {
             _chat = chat;
         }
-        [HttpPost("[action]/{connectionId}/{roomName}")]
-        public async Task<IActionResult> JoinRoom(string connectionId, string roomName)
+        [HttpPost("[action]/{connectionId}/{roomId}")]
+        public async Task<IActionResult> JoinRoom(string connectionId, string roomId)
         {
-            await _chat.Groups.AddToGroupAsync(connectionId, roomName);
+            await _chat.Groups.AddToGroupAsync(connectionId, roomId);
             return Ok();
         }
-        [HttpPost("[action]/{connectionId}/{roomName}")]
-        public async Task<IActionResult> LeaveRoom(string connectionId, string roomName)
+        [HttpPost("[action]/{connectionId}/{roomId}")]
+        public async Task<IActionResult> LeaveRoom(string connectionId, string roomId)
         {
-            await _chat.Groups.RemoveFromGroupAsync(connectionId, roomName);
+            await _chat.Groups.RemoveFromGroupAsync(connectionId, roomId);
             return Ok();
         }
         [HttpPost("[action]")]
         public async Task<IActionResult> SendMessage(
             string message, 
             int chatId,
-            string roomName
+            string roomId
             ,[FromServices] AppDbContext ctx,
             [FromServices] UserManager<User> _userManager)
         {
@@ -54,7 +54,7 @@ namespace ChatProject.Controllers
             var date = msg.Timestamp.ToString("dd/MM/yyyy hh:mm:ss");
             ctx.Messages.Add(msg);
             await ctx.SaveChangesAsync();
-            await _chat.Clients.Groups(roomName)
+            await _chat.Clients.Groups(roomId)
                 .SendAsync("ReceiveMessage", msg, user, date);
             return Ok();
         }

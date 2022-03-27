@@ -49,7 +49,7 @@
     <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform">
         <input type="hidden" name="chatId" value="@Model.Id" />
         <input type="hidden" id="currentUser" value="@User.Identity.Name" />
-        <input type="hidden" name="roomName" value="@Model.Name" />
+        <input type="hidden" name="roomId" value="@Model.Id" />
         <input type="text" name="message" id="message-input" style="display: none;" />
         <button type="submit">Send</button>
     </form>
@@ -157,7 +157,7 @@
         })
 
         var joinRoom = function () {
-            var url = '/Chat/JoinRoom/' + _connectionId + '/@Model.Name';
+            var url = '/Chat/JoinRoom/' + _connectionId + '/@Model.Id';
             axios.post(url, null)
                 .then(res => {
                     console.log("Room Joined!", res);
