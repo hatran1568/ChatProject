@@ -34,7 +34,10 @@ namespace ChatProject.Controllers
             ViewData["currentUser"] = _ctx.Users.FirstOrDefault(x => x.Id == userId).UserName;
             return View(chats);
         }
-
+        public IActionResult GetRoomViewComponent(int chatId)
+        {
+            return ViewComponent("Room", new {chatType = ChatType.Room, chatId = chatId });
+        }
         public IActionResult Privacy()
         {
             return View();
