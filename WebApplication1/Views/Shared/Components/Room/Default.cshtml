@@ -14,11 +14,15 @@
             }
             else
             {
+                    <img src="/images/@chat.Users.FirstOrDefault(x => x.UserId != userId).User.Avatar" class="side-avatar" />
                 @chat.Users.FirstOrDefault(x => x.UserId != userId).User.DisplayName
             }
         </a>
     }
-    <a class="room-button" id="create-room-btn" href="">
-        <strong>+</strong>
-    </a>
+    @if (ViewBag.ChatType != ChatType.Private)
+    {
+        <a class="room-button" id="create-room-btn" href="">
+            <strong>+</strong>
+        </a>
+    }
 </div>

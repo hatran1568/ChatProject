@@ -40,23 +40,31 @@
                         <ul class="list-unstyled" id="msg-list">
                             @foreach (var message in Model.Messages)
                             {
-                                <li>
-                                    <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
-                                        <div class="left-side">
-                                            <img src="/images/@message.User.Avatar" class="message-avatar" />
-                                        </div>
-                                        <div class="message-content d-flex flex-column">
-                                            <div class="d-flex justify-content-between">
-                                                <span class="author">@message.User.DisplayName</span>
-                                                <span class="timestamp">
-                                                    <i class="far fa-clock"></i>
-                                                    <span>@message.Timestamp</span>
-                                                </span>
+                                if (message.Type == MessageType.Text)
+                                {
+
+                                    <li>
+                                        <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
+                                            <div class="left-side">
+                                                <img src="/images/@message.User.Avatar" class="message-avatar" />
                                             </div>
-                                            <span class="content">@message.Text</span>
+                                            <div class="message-content d-flex flex-column">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="author">@message.User.DisplayName</span>
+                                                    <span class="timestamp">
+                                                        <i class="far fa-clock"></i>
+                                                        <span>@message.Timestamp</span>
+                                                    </span>
+                                                </div>
+                                                <span class="content">@message.Text</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                }
+
+                                @*<li>
+                <div class="noti-message" style="color: dimgrey; text-align:center;">User has left the room</div>
+            </li>*@
                             }
                         </ul>
                     </div>
@@ -112,23 +120,30 @@
                 <ul class="list-unstyled" id="msg-list">
                     @foreach (var message in Model.Messages)
                     {
-                        <li>
-                            <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
-                                <div class="left-side">
-                                    <img src="/images/@message.User.Avatar" class="message-avatar" />
-                                </div>
-                                <div class="message-content d-flex flex-column">
-                                    <div class="d-flex justify-content-between">
-                                        <span class="author">@message.User.DisplayName</span>
-                                        <span class="timestamp">
-                                            <i class="far fa-clock"></i>
-                                            <span>@message.Timestamp</span>
-                                        </span>
+                        if (message.Type == MessageType.Text)
+                        {
+                            <li>
+                                <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
+                                    <div class="left-side">
+                                        <img src="/images/@message.User.Avatar" class="message-avatar" />
                                     </div>
-                                    <span class="content">@message.Text</span>
+                                    <div class="message-content d-flex flex-column">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="author">@message.User.DisplayName</span>
+                                            <span class="timestamp">
+                                                <i class="far fa-clock"></i>
+                                                <span>@message.Timestamp</span>
+                                            </span>
+                                        </div>
+                                        <span class="content">@message.Text</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+                        }
+
+                        @*<li>
+                <div class="noti-message">User has left the room</div>
+            </li>*@
                     }
                 </ul>
             </div>
@@ -137,7 +152,7 @@
                 <input type="hidden" id="currentUser" value="@User.Identity.Name" />
                 <input type="hidden" name="roomId" value="@Model.Id" />
                 <input type="text" name="message" id="message-input" style="display: none;" />
-                <button type="submit">Send</button>
+                <button type="submit" class="btn btn-info btn-send">Send</button>
             </form>
         </div>
     }

@@ -69,6 +69,13 @@ body {
     .room-button:hover {
         box-shadow: 0 2px 3px 1px #a763f1;
     }
+    .room-button > image {
+        width: 40px;
+        height: 40px;
+        float: left;
+        margin-right: 10px;
+        border-radius: 21px;
+    }
 
 .chat {
     background-color: #eee;
@@ -207,4 +214,12 @@ body {
 }
 .btn-send{
     width: 100px;
+}
+
+.side-avatar {
+    width: 40px;
+    height: 40px;
+    float: left;
+    margin-right: 10px;
+    border-radius: 21px;
 }

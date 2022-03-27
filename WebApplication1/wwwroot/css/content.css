@@ -1,4 +1,10 @@
-﻿.main-content {
+﻿.noti-message {
+    margin: auto;
+    width: 100%;
+    text-align: center;
+    color: turquoise;
+}
+.main-content {
     border-right: 1px solid #eee;
     display: flex;
     flex-direction: column;
