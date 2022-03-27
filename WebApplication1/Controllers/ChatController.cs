@@ -111,25 +111,6 @@ namespace ChatProject.Controllers
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
-            if (message.Trim().Length > 0)
-            {
-                
-                var msg = new Message
-                {
-                    ChatID = chatId,
-                    Text = message,
-                    UserID = userId,
-                    Timestamp = DateTime.Now,
-                    MessageType = MessageType.Text
-                };
-                var date = msg.Timestamp.ToString("dd/MM/yyyy hh:mm:ss");
-                ctx.Messages.Add(msg);
-                await ctx.SaveChangesAsync();
-                await _chat.Clients.Groups(roomId)
-                    .SendAsync("ReceiveMessage", msg, user, date);
-            }
-            
-            
             if (image != null)
             {
                 string uniqueFileName = null;
@@ -153,6 +134,30 @@ namespace ChatProject.Controllers
                 await _chat.Clients.Groups(roomId)
                     .SendAsync("ReceiveMessage", imagemsg, user, imagemsgDate);
             }
+            if (message == null)
+            {
+                return Ok();
+            }
+            if (message.Trim().Length > 0)
+            {
+                
+                var msg = new Message
+                {
+                    ChatID = chatId,
+                    Text = message,
+                    UserID = userId,
+                    Timestamp = DateTime.Now,
+                    MessageType = MessageType.Text
+                };
+                var date = msg.Timestamp.ToString("dd/MM/yyyy hh:mm:ss");
+                ctx.Messages.Add(msg);
+                await ctx.SaveChangesAsync();
+                await _chat.Clients.Groups(roomId)
+                    .SendAsync("ReceiveMessage", msg, user, date);
+            }
+            
+            
+            
                 return Ok();
         }
 

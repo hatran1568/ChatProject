@@ -429,7 +429,7 @@
         var form = null;
         function sendMessage() {
             event.preventDefault();
-            var data = new FormData(event.target);
+            var data = new FormData(document.getElementById("chatform"));
             $(".emojionearea-editor").html('');
             axios.post('/Chat/SendMessage/', data)
                 .then(res => {
