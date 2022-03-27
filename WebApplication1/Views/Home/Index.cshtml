@@ -12,7 +12,7 @@
 <div class="main">
     @if (User.Identity.IsAuthenticated)
     {
-        <vc:room chat-type="@ChatType.Room">
+        <vc:room chat-type="@ChatType.Room" chat-id="0">
         </vc:room>
     }
     <div class="chat">

@@ -6,7 +6,7 @@
 <div class="side-menu">
     @foreach (var chat in Model)
     {
-        <a class="room-button" asp-controller="Home" asp-action="Chat" asp-route-id="@chat.Id">
+        <a class="room-button @(ViewBag.ChatId.Equals(chat.Id.ToString()) ? "chat-active" : "inactive")" asp-controller="Home" asp-action="Chat" asp-route-id="@chat.Id">
             @if (chat.Name != null && chat.Type != ChatType.Private)
             {
                 @chat.Name
