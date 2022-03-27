@@ -83,6 +83,7 @@ namespace ChatProject.Controllers
         public IActionResult Chat(int id)
         {
             Chat chat = _ctx.Chats
+                .Include(x => x.Users)
                 .Include(x => x.Messages)
                 .ThenInclude(x => x.User)
                 .FirstOrDefault(x => x.Id == id);
@@ -90,10 +91,13 @@ namespace ChatProject.Controllers
             ViewData["currentUser"] = _ctx.Users.FirstOrDefault(x => x.Id == userId).UserName;
             if (chat != null)
             {
-                ViewBag.ChatType = chat.Type;
-                return View(chat);
+                if (chat.Users.Any(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                {
+                    ViewBag.ChatType = chat.Type;
+                    return View(chat);
+                }
             }
-            else return RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
         [HttpPost]
         public async Task<IActionResult> CreateMessage(int chatId, string message)
