@@ -49,7 +49,7 @@ namespace ChatProject.Controllers
                 .FirstOrDefault(x => x.Id == id);
             if (chats.Users.FirstOrDefault(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value) != null)
             {
-                return RedirectToAction("Chat", new { id = id });
+                return RedirectToAction("Chat","Home", new { id = id });
             }
             var chatUser = new ChatUser
             {
