@@ -28,7 +28,7 @@
                 @foreach (var chat in Model)
                 {
                     <a class="room-button" asp-controller="Home" asp-action="JoinRoom" asp-route-id="@chat.Id">
-                            @chat.Name
+                        @chat.Name
                     </a>
                 }
             </div>
@@ -37,7 +37,27 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+
 <script>
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .build();
+    var _connectionId = '';
+
+    connection.start()
+        .then(function () {
+            connection.invoke("getConnectionId")
+                .then(function (connectionId) {
+                    _connectionId = connectionId
+
+                })
+        })
+        .catch(function (err) {
+            console.log(err)
+        })
+
+
     function search_func() {
         address = document.getElementById("userSearch").value;
         //write your specific code from here

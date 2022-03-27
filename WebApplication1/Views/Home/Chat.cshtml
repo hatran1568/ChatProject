@@ -64,7 +64,7 @@
                 <div class="col-3" style="border-left:1px solid black">
                     <h3>Members</h3>
                     <div id="plist" class="people-list">
-                        <ul class="list-unstyled chat-list mt-2 mb-0">
+                        <ul id="peopleList" class="list-unstyled chat-list mt-2 mb-0">
                             @foreach (var item in Model.Users)
                             {
                                 @if (!item.UserId.Equals(userId))
@@ -72,8 +72,9 @@
                                     <li class="clearfix" onclick="window.location.href='@Url.Action("CreatePrivateRoom", "Home", new { userId = item.UserId})'">
                                         <img src="/images/@item.User.Avatar" alt="avatar">
                                         <div class="about">
+                                            <div style="display:none;">@item.User.UserName</div>
                                             <div class="name">@item.User.DisplayName</div>
-                                            <div class="status"> <i class="fa fa-circle offline"></i></div>
+                                            <div class="status"> <i class="fa fa-circle online"></i></div>
                                         </div>
                                     </li>
                                 }
@@ -82,8 +83,9 @@
                                     <li class="clearfix">
                                         <img src="/images/@item.User.Avatar" alt="avatar">
                                         <div class="about">
+                                            <div style="display:none;">@item.User.UserName</div>
                                             <div class="name">@item.User.DisplayName</div>
-                                            <div class="status"> <i class="fa fa-circle offline"></i></div>
+                                            <div class="status"> <i class="fa fa-circle online"></i></div>
                                         </div>
                                     </li>
                                 }
@@ -301,5 +303,28 @@
                 })
             //event.preventDefault();
         }
+
+        connection.on("UserJoined", function (connectedUsers) {
+            var usersJson = JSON.parse(connectedUsers);
+            $('#peopleList').children('li').each(function () {
+                var mainDiv = this.getElementsByTagName('div')[0];
+                var statusDiv = mainDiv.getElementsByTagName('div')[2];
+                var userName = mainDiv.getElementsByTagName('div')[0].innerHTML;
+                console.log(userName);
+                while (statusDiv.firstChild) {
+                    statusDiv.removeChild(statusDiv.lastChild);
+                }
+                if (usersJson.includes(userName)) {
+                    var newStatus = document.createElement('i');
+                    newStatus.className = "fa fa-circle online";
+                    statusDiv.appendChild(newStatus);
+                } else {
+                    var newStatus = document.createElement('i');
+                    newStatus.className = "fa fa-circle offline";
+                    statusDiv.appendChild(newStatus);
+                }
+                
+            });
+        });
     </script>
 }
