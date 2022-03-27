@@ -26,18 +26,23 @@ namespace ChatProject.Controllers
         [HttpPost("[action]/{connectionId}/{roomId}")]
         public async Task<IActionResult> JoinRoom(string connectionId, string roomId, [FromServices] UserManager<User> _userManager)
         {
+            
             await _chat.Groups.AddToGroupAsync(connectionId, roomId);
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
             string userJson = JsonSerializer.Serialize(user);
             await _chat.Clients.Groups(roomId).SendAsync("UserAdded", userJson);
+
             return Ok();
         }
         [HttpPost("[action]/{connectionId}/{roomId}")]
-        public async Task<IActionResult> LeaveRoom(string connectionId, string roomId)
+        public async Task<IActionResult> LeaveRoom(string connectionId, string roomId, [FromServices] UserManager<User> _userManager)
         {
             await _chat.Groups.RemoveFromGroupAsync(connectionId, roomId);
-            await _chat.Clients.Groups(roomId).SendAsync("UserRemoved");
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+            string userJson = JsonSerializer.Serialize(user);
+            await _chat.Clients.Groups(roomId).SendAsync("UserRemoved", userJson);
             return Ok();
         }
         [HttpPost("[action]")]

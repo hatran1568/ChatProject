@@ -325,7 +325,7 @@
 
         connection.on("UserJoined", function (connectedUsers) {
             var usersJson = JSON.parse(connectedUsers);
-            alert(usersJson);
+            //alert(usersJson);
             $('#peopleList').children('li').each(function () {
                 var mainDiv = this.getElementsByTagName('div')[0];
                 var statusDiv = mainDiv.getElementsByTagName('div')[2];
@@ -350,13 +350,19 @@
         connection.on("UserAdded", function (userJson) {
             var userAdded = JSON.parse(userJson);
             var peopleList = document.getElementById("peopleList");
+            $('#peopleList').children('li').each(function () {
+                var mainDiv = this.getElementsByTagName('div')[0];
+                var userName = mainDiv.getElementsByTagName('div')[0].innerHTML;
+                if (userName.localeCompare(userAdded.UserName) == 0) {
+                    $('#peopleList').remove(this);
+                }
+            });
             var clearFix = document.createElement('li');
             clearFix.className = "clearfix";
-            if (userAdded.id != @userId) {
-                clearFix.onclick = function () {
-                    window.location.href = '/Home/CreatePrivateRoom?userId=' + userAdded.id;
-                }
+            clearFix.onclick = function () {
+                    window.location.href = '/Home/CreatePrivateRoom?userId=' + userAdded.Id;
             }
+
             var img = document.createElement('img');
             img.src = "/images/" + userAdded.Avatar;
             clearFix.appendChild(img);
@@ -364,11 +370,11 @@
             about.className = "about";
             var userName = document.createElement('div');
             userName.style = "display: none";
-            userName.innerHTML = userAdded.userName;
+            userName.innerHTML = userAdded.UserName;
             about.appendChild(userName);
             var displayName = document.createElement('div');
             displayName.className = "name";
-            about.appendChild(displayName);
+            about.appendChild(DisplayName);
             var status = document.createElement('div');
             status.className = "status";
             var statusIcon = document.createElement('i');
@@ -377,6 +383,19 @@
             about.appendChild(status);
             clearFix.appendChild(about);
             peopleList.appendChild(clearFix);
+        });
+
+        connection.on("UserRemoved", function (userJson) {
+            var userAdded = JSON.parse(userJson);
+            var peopleList = document.getElementById("peopleList");
+            $('#peopleList').children('li').each(function () {
+                var mainDiv = this.getElementsByTagName('div')[0];
+                var userName = mainDiv.getElementsByTagName('div')[0].innerHTML;
+                alert(userName.localeCompare(userAdded.UserName));
+                if (userName.localeCompare(userAdded.UserName) == 0) {
+                    this.remove();
+                }
+            });
         });
     </script>
 }
