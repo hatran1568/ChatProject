@@ -15,7 +15,7 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <vc:room chat-type="@ViewBag.ChatType">
+        <vc:room chat-type="@ViewBag.ChatType" chat-id="@ViewBag.ChatId">
         </vc:room>
     }
     @if (ViewBag.ChatType == ChatType.Room)

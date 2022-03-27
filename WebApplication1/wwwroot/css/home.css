@@ -200,6 +200,8 @@ body {
     flex-grow: 1;
     display: flex;
 }
-.modal-backdrop{
-    z-index: 0;
+
+.chat-active {
+    background-color: white;
+    color: #aa22f2;
 }

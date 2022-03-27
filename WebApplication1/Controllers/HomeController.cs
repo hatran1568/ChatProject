@@ -94,6 +94,7 @@ namespace ChatProject.Controllers
                 if (chat.Users.Any(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 {
                     ViewBag.ChatType = chat.Type;
+                    ViewBag.ChatId = chat.Id;
                     return View(chat);
                 }
             }

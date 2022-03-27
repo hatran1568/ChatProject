@@ -16,10 +16,10 @@ namespace ChatProject.ViewComponents
         {
             _ctx = ctx;
         }
-        public IViewComponentResult Invoke(ChatType chatType)
+        public IViewComponentResult Invoke(ChatType chatType, String chatId)
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var chat = _ctx.ChatUsers
+            var chats = _ctx.ChatUsers
                 .Include(x => x.Chat)
                 .ThenInclude(x => x.Users)
                 .ThenInclude(x => x.User)
@@ -27,7 +27,8 @@ namespace ChatProject.ViewComponents
                 .Where(x => x.Chat.Type == chatType)
                 .Select(x => x.Chat)
                 .ToList();
-            return View(chat);
+            ViewBag.ChatId = chatId;
+            return View(chats);
         }
     }
 }
