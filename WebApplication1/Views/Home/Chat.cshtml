@@ -40,7 +40,7 @@
                         <ul class="list-unstyled" id="msg-list">
                             @foreach (var message in Model.Messages)
                             {
-                                if (message.Type == MessageType.Text)
+                                if (message.MessageType == MessageType.Text)
                                 {
 
                                     <li>
@@ -61,7 +61,7 @@
                                         </div>
                                     </li>
                                 }
-                                else if (message.Type == MessageType.Notification)
+                                else if (message.MessageType == MessageType.Notification)
                                 {
 
                                     <li>
@@ -112,7 +112,7 @@
                 <input type="hidden" name="chatId" value="@Model.Id" />
                 <input type="hidden" id="currentUser" value="@User.Identity.Name" />
                 <input type="hidden" name="roomId" value="@Model.Id" />
-                <input type="text" name="message" id="message-input" style="display: none;" />
+                <input type="text" name="message" id="message-input"/>
                 <button type="submit" class="btn btn-info btn-send">Send</button>
             </form>
         </div>
@@ -124,7 +124,7 @@
                 <ul class="list-unstyled" id="msg-list">
                     @foreach (var message in Model.Messages)
                     {
-                        if (message.Type == MessageType.Text)
+                        if (message.MessageType == MessageType.Text)
                         {
                             <li>
                                 <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
@@ -155,7 +155,7 @@
                 <input type="hidden" name="chatId" value="@Model.Id" />
                 <input type="hidden" id="currentUser" value="@User.Identity.Name" />
                 <input type="hidden" name="roomId" value="@Model.Id" />
-                <input type="text" name="message" id="message-input" style="display: none;" />
+                <input type="text" name="message" id="message-input"/>
                 <button type="submit" class="btn btn-info btn-send">Send</button>
             </form>
         </div>
