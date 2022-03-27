@@ -29,6 +29,7 @@ namespace ChatProject.ViewComponents
                 .Select(x => x.Chat)
                 .ToList();
             ViewBag.ChatId = chatId;
+            ViewBag.ChatType = chatType;
             return View(chats);
         }
     }

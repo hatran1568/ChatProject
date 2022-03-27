@@ -236,7 +236,7 @@ body {
     border-radius: 1px;
 
 }
-/*input[type="file"] {
+input[type="file"] {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -245,4 +245,4 @@ body {
     overflow: hidden;
     clip: rect(0,0,0,0);
     border: 0;
-}*/
+}

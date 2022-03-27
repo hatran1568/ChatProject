@@ -16,7 +16,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div id="partialDiv" class="side-menu">
-            @await Component.InvokeAsync("Room", new {chatType = ViewBag.ChatType, chatId = ViewBag.ChatId })
+            @await Component.InvokeAsync("Room", new {chatType = Model.Type, chatId = Model.Id })
         </div>
         //<vc:room chat-type="@ViewBag.ChatType" chat-id="@ViewBag.ChatId"></vc:room>
     }
@@ -288,16 +288,19 @@
             list.appendChild(li);
             document.getElementById("joinedRoom").innerHTML = newName;
             $(".chat-body").animate({ scrollTop: $(".chat-body")[0].scrollHeight }, 500);
+            refreshSide(chatId);
 
+        });
+        var refreshSide = function (id) {
             $.ajax({
                 url: '@Url.Action("GetRoomViewComponent", "Home")',
-                data: { chatId: chatId },
+                data: { chatId: id },
                 success: function (data) {
                     $("#partialDiv").html("");
                     $("#partialDiv").html(data);
             }
         })
-        });
+        }
         connection.on("UserLeft", function (data) {
             console.log("user left notified");
             var div = document.createElement("div");
@@ -378,7 +381,7 @@
                 img.style = "max-width: 400px";
                 spanContent.appendChild(img);
             }
-            
+
 
             div2.appendChild(spanContent)
 
