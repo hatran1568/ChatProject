@@ -58,5 +58,32 @@ namespace ChatProject.Controllers
                 .SendAsync("ReceiveMessage", msg, user, date);
             return Ok();
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Rename(
+            string newName,
+            int chatId,
+            string roomId
+            , [FromServices] AppDbContext ctx,
+            [FromServices] UserManager<User> _userManager)
+        {
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+            var chat = ctx.Chats.FirstOrDefault(x => x.Id == chatId);
+            chat.Name = newName;
+            var msg = new Message
+            {
+                ChatID = chatId,
+                Text = user.DisplayName + " named the group " + newName + ".",
+                Timestamp = DateTime.Now, 
+                MessageType = MessageType.Notification
+            };
+            var date = msg.Timestamp.ToString("dd/MM/yyyy hh:mm:ss");
+            ctx.Messages.Add(msg);
+            await ctx.SaveChangesAsync();
+            await _chat.Clients.Groups(roomId)
+                .SendAsync("Rename", msg.Text, newName, chatId);
+            return Ok();
+        }
     }
 }

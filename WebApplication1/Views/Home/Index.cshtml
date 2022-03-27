@@ -12,8 +12,9 @@
 <div class="main">
     @if (User.Identity.IsAuthenticated)
     {
-        <vc:room chat-type="@ChatType.Room" chat-id="0">
-        </vc:room>
+    <div id="partialDiv" class="side-menu">
+        @await Component.InvokeAsync("Room", new { chatType = ChatType.Room, chatId = 0 })
+    </div>
     }
     <div class="chat">
         <div class="chat-body">

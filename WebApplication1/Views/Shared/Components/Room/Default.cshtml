@@ -3,7 +3,6 @@
 @{
     var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 }
-<div class="side-menu">
     @foreach (var chat in Model)
     {
         <a class="room-button @(ViewBag.ChatId.Equals(chat.Id.ToString()) ? "chat-active" : "inactive")" asp-controller="Home" asp-action="Chat" asp-route-id="@chat.Id">
@@ -25,4 +24,3 @@
             <strong>+</strong>
         </a>
     }
-</div>

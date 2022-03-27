@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace ChatProject.ViewComponents
 {
+    [ViewComponent]
     public class RoomViewComponent : ViewComponent
     {
         private AppDbContext _ctx;
@@ -16,7 +17,7 @@ namespace ChatProject.ViewComponents
         {
             _ctx = ctx;
         }
-        public IViewComponentResult Invoke(ChatType chatType, String chatId)
+        public IViewComponentResult Invoke(ChatType chatType, int chatId)
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chats = _ctx.ChatUsers

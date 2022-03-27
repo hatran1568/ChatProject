@@ -31,7 +31,10 @@ namespace ChatProject.Controllers
             ViewData["currentUser"] = _ctx.Users.FirstOrDefault(x => x.Id == userId).UserName;
             return View(chats);
         }
-
+        public IActionResult GetRoomViewComponent(int chatId)
+        {
+            return ViewComponent("Room", new {chatType = ChatType.Room, chatId = chatId });
+        }
         public IActionResult Privacy()
         {
             return View();
@@ -123,7 +126,8 @@ namespace ChatProject.Controllers
                 ChatID = chatId,
                 Text = message,
                 UserID = userId,
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.Now,
+                MessageType = MessageType.Notification
             };
             _ctx.Messages.Add(msg);
             await _ctx.SaveChangesAsync();

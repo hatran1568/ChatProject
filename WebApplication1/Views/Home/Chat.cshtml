@@ -15,8 +15,10 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <vc:room chat-type="@ViewBag.ChatType" chat-id="@ViewBag.ChatId">
-        </vc:room>
+        <div id="partialDiv" class="side-menu">
+            @await Component.InvokeAsync("Room", new {chatType = ViewBag.ChatType, chatId = ViewBag.ChatId })
+        </div>
+        //<vc:room chat-type="@ViewBag.ChatType" chat-id="@ViewBag.ChatId"></vc:room>
     }
     @if (ViewBag.ChatType == ChatType.Room)
     {
@@ -65,7 +67,7 @@
                                 {
 
                                     <li>
-                                        <div class="noti-message" style="color: dimgrey; text-align:center;">User has left the room</div>
+                                        <div class="noti-message" style="color: gray; text-align:center; font-size: 12px; margin: 10px;">@message.Text</div>
                                     </li>
                                 }
 
@@ -112,7 +114,7 @@
                 <input type="hidden" name="chatId" value="@Model.Id" />
                 <input type="hidden" id="currentUser" value="@User.Identity.Name" />
                 <input type="hidden" name="roomId" value="@Model.Id" />
-                <input type="text" name="message" id="message-input"/>
+                <input type="text" name="message" id="message-input" />
                 <button type="submit" class="btn btn-info btn-send">Send</button>
             </form>
         </div>
@@ -146,8 +148,8 @@
                         }
 
                         @*<li>
-                <div class="noti-message">User has left the room</div>
-            </li>*@
+                                <div class="noti-message">User has left the room</div>
+                            </li>*@
                     }
                 </ul>
             </div>
@@ -155,7 +157,7 @@
                 <input type="hidden" name="chatId" value="@Model.Id" />
                 <input type="hidden" id="currentUser" value="@User.Identity.Name" />
                 <input type="hidden" name="roomId" value="@Model.Id" />
-                <input type="text" name="message" id="message-input"/>
+                <input type="text" name="message" id="message-input" />
                 <button type="submit" class="btn btn-info btn-send">Send</button>
             </form>
         </div>
@@ -165,14 +167,16 @@
 </div>
 
 <div class="modal" id="rename-room-modal">
-    <form asp-controller="Home" asp-action="Rename" class="modal-body">
+    <form asp-controller="Home" asp-action="Rename" class="modal-body" onsubmit="rename()">
         <button type="button" class="close" onclick="closeRenameModal()">X</button>
         <header>Rename Room</header>
         <div>
-            <input name="name">
+            <input name="roomId" value="@Model.Id" type="hidden">
+            <input name="chatId" value="@Model.Id" type="hidden">
+            <input name="newName" value="@Model.Name">
         </div>
         <footer>
-            <button onclick="closeRenameModal()">Create</button>
+            <button onclick="closeRenameModal()">Rename</button>
         </footer>
     </form>
 </div>
@@ -220,6 +224,29 @@
             .withUrl("/chatHub")
             .build();
         var _connectionId = '';
+        connection.on("Rename", function (message, newName, chatId) {
+            var div = document.createElement("div");
+            div.appendChild(document.createTextNode(message));
+            div.style.color = "dimgrey";
+            div.style.textAlign = "center";
+            div.style.fontSize = "12px";
+            div.style.margin = "10px";
+            var li = document.createElement("li")
+            li.appendChild(div)
+            var list = document.getElementById("msg-list")
+            list.appendChild(li);
+            document.getElementById("joinedRoom").innerHTML = newName;
+            $(".chat-body").animate({ scrollTop: $(".chat-body")[0].scrollHeight }, 500);
+
+            $.ajax({
+                url: '@Url.Action("GetRoomViewComponent", "Home")',
+                data: { chatId: chatId },
+                success: function (data) {
+                    $("#partialDiv").html("");
+                    $("#partialDiv").html(data);
+            }
+        })
+        });
         connection.on("ReceiveMessage", function (data, sender, date) {
             console.log("messagereceived!")
             var currentUserName = document.getElementById("currentUser").value;
@@ -322,6 +349,19 @@
                 })
             //event.preventDefault();
         }
+        function rename() {
+            event.preventDefault();
+            var data = new FormData(event.target);
+            $(".emojionearea-editor").html('');
+            axios.post('/Chat/Rename/', data)
+                .then(res => {
+                    console.log("Message Sent!")
+                })
+                .catch(err => {
+                    console.log("Failed to send message")
+                })
+            //event.preventDefault();
+        }
 
         connection.on("UserJoined", function (connectedUsers) {
             var usersJson = JSON.parse(connectedUsers);
@@ -342,7 +382,7 @@
                     newStatus.className = "fa fa-circle offline";
                     statusDiv.appendChild(newStatus);
                 }
-                
+
             });
         });
     </script>
