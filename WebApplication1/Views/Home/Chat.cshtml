@@ -68,6 +68,28 @@
                                         <div class="noti-message" style="color: dimgrey; text-align:center;">User has left the room</div>
                                     </li>
                                 }
+                                else if (message.MessageType == MessageType.Image)
+                                {
+                                    <li>
+                                        <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
+                                            <div class="left-side">
+                                                <img src="/images/@message.User.Avatar" class="message-avatar" />
+                                            </div>
+                                            <div class="message-content d-flex flex-column">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="author">@message.User.DisplayName</span>
+                                                    <span class="timestamp">
+                                                        <i class="far fa-clock"></i>
+                                                        <span>@message.Timestamp</span>
+                                                    </span>
+                                                </div>
+                                                <span class="content">
+                                                    <img style="max-width:400px" src="/images/@message.Text" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
 
                             }
                         </ul>
@@ -82,7 +104,7 @@
                                 @if (!item.UserId.Equals(userId))
                                 {
                                     <li class="clearfix" onclick="window.location.href='@Url.Action("CreatePrivateRoom", "Home", new { userId = item.UserId})'">
-                                        <img src="/images/@item.User.Avatar" alt="avatar">
+                                        <img src="/images/@item.User.Avatar">
                                         <div class="about">
                                             <div style="display:none;">@item.User.UserName</div>
                                             <div class="name">@item.User.DisplayName</div>
@@ -93,7 +115,7 @@
                                 else
                                 {
                                     <li class="clearfix">
-                                        <img src="/images/@item.User.Avatar" alt="avatar">
+                                        <img src="/images/@item.User.Avatar">
                                         <div class="about">
                                             <div style="display:none;">@item.User.UserName</div>
                                             <div class="name">@item.User.DisplayName</div>
@@ -108,11 +130,15 @@
                     </div>
                 </div>
             </div>
-            <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform">
+            <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform" enctype="multipart/form-data">
                 <input type="hidden" name="chatId" value="@Model.Id" />
                 <input type="hidden" id="currentUser" value="@User.Identity.Name" />
                 <input type="hidden" name="roomId" value="@Model.Id" />
-                <input type="text" name="message" id="message-input"/>
+                <input type="text" name="message" id="message-input" />
+                <label for="file-upload" class="custom-file-upload">
+                    <i class="fa fa-cloud-upload"></i>
+                </label>
+                <input id="file-upload" style="display:none;" type="file" name="image" accept="image/*" onchange="sendMessage()" />
                 <button type="submit" class="btn btn-info btn-send">Send</button>
             </form>
         </div>
@@ -144,18 +170,43 @@
                                 </div>
                             </li>
                         }
-
+                        else if (message.MessageType == MessageType.Image)
+                        {
+                            <li>
+                                <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
+                                    <div class="left-side">
+                                        <img src="/images/@message.User.Avatar" class="message-avatar" />
+                                    </div>
+                                    <div class="message-content d-flex flex-column">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="author">@message.User.DisplayName</span>
+                                            <span class="timestamp">
+                                                <i class="far fa-clock"></i>
+                                                <span>@message.Timestamp</span>
+                                            </span>
+                                        </div>
+                                        <span class="content">
+                                            <img style="max-width:400px" src="/images/@message.Text"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        }
                         @*<li>
                 <div class="noti-message">User has left the room</div>
             </li>*@
                     }
                 </ul>
             </div>
-            <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform">
+            <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform" enctype="multipart/form-data">
                 <input type="hidden" name="chatId" value="@Model.Id" />
                 <input type="hidden" id="currentUser" value="@User.Identity.Name" />
                 <input type="hidden" name="roomId" value="@Model.Id" />
-                <input type="text" name="message" id="message-input"/>
+                <input type="text" name="message" id="message-input" value=" " />
+                <label for="file-upload" class="custom-file-upload">
+                    <i class="fa fa-cloud-upload"></i>
+                </label>
+                <input  id="file-upload" style="display:none;" type="file" name="image" accept="image/*" onchange="sendMessage()" />
                 <button type="submit" class="btn btn-info btn-send">Send</button>
             </form>
         </div>
@@ -260,10 +311,19 @@
             div3.appendChild(spanTimestamp)
 
             div2.appendChild(div3);
-
-            var spanContent = document.createElement("span");
-            spanContent.classList.add("content")
-            spanContent.appendChild(document.createTextNode(data.text))
+            if (data.messageType == 0) {
+                var spanContent = document.createElement("span");
+                spanContent.classList.add("content")
+                spanContent.appendChild(document.createTextNode(data.text))
+            } else if (data.messageType == 2) {
+                var spanContent = document.createElement("span");
+                spanContent.classList.add("content")
+                var img = document.createElement('img');
+                img.src = "/images/" + data.text;
+                img.style = "max-width: 400px";
+                spanContent.appendChild(img);
+            }
+            
 
             div2.appendChild(spanContent)
 
@@ -320,6 +380,7 @@
                 .catch(err => {
                     console.log("Failed to send message")
                 })
+            $('#chatform').trigger('reset');
             //event.preventDefault();
         }
 
@@ -397,5 +458,11 @@
                 }
             });
         });
+
+        function submitMessage() {
+            var preview = document.getElementById('message-input');
+            preview.innerHTML = "";
+            $('#chatform').submit();
+        }
     </script>
 }
