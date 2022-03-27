@@ -11,6 +11,7 @@ namespace ChatProject.Model
         public string Text { get; set; }
         public DateTime Timestamp { get; set; }
         public bool IsDeleted { get; set; }
+        public MessageType Type { get; set; }
         public int ChatID { get; set; }
         public Chat Chat { get; set; }
         public string UserID { get; set; }
