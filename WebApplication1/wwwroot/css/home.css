@@ -86,7 +86,7 @@ body {
     padding-bottom: 1rem;
     padding-left: 1rem;
     overflow: auto;
-    height: 500px;
+    height: 650px;
 }
 
 .message {
@@ -127,6 +127,7 @@ body {
     display: flex;
     flex-direction: row;
     padding: 0.5rem;
+    bottom: 0;
 }
 
     .chat-input > input {
@@ -186,3 +187,16 @@ body {
         top: 5px;
         right: 10px;
     }
+
+    .chat .row{
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+.chat .main-body {
+    margin-left: 0;
+    margin-right: 0;
+    max-height: 100%;
+    flex-grow: 1;
+    display: flex;
+}

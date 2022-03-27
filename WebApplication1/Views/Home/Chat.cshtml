@@ -2,6 +2,10 @@
 @{
     Layout = "Shared/_LayoutHome.cshtml";
 }
+@using System.Security.Claims
+@{
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+}
 @*<div class="chat-body">
 
         @foreach (var message in Model.Messages)
@@ -14,46 +18,115 @@
             </div>
         }
     </div>*@
+
 <link href="~/css/emojionearea.min.css" rel="stylesheet" />
+<link href="~/css/UserList.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
 <div class="main">
+
     @if (User.Identity.IsAuthenticated)
     {
         <vc:room chat-type="@ViewBag.ChatType">
         </vc:room>
     }
-<div class="chat">
-    <div class="chat-body">
-        <ul class="list-unstyled" id="msg-list">
-            @foreach (var message in Model.Messages)
-            {
-                <li>
-                    <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
-                        <div class="left-side">
-                            <img src="/images/@message.User.Avatar" class="message-avatar" />
-                        </div>
-                        <div class="message-content d-flex flex-column">
-                            <div class="d-flex justify-content-between">
-                                <span class="author">@message.User.DisplayName</span>
-                                <span class="timestamp">
-                                    <i class="far fa-clock"></i>
-                                    <span>@message.Timestamp</span>
-                                </span>
-                            </div>
-                            <span class="content">@message.Text</span>
-                        </div>
+    @if (ViewBag.ChatType == ChatType.Room)
+    {
+        <div class="chat">
+            <div class="row"></div>
+            <div class="main-body">
+                <div class="col-9">
+                    <div class="chat-body">
+                        <ul class="list-unstyled" id="msg-list">
+                            @foreach (var message in Model.Messages)
+                            {
+                                <li>
+                                    <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
+                                        <div class="left-side">
+                                            <img src="/images/@message.User.Avatar" class="message-avatar" />
+                                        </div>
+                                        <div class="message-content d-flex flex-column">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="author">@message.User.DisplayName</span>
+                                                <span class="timestamp">
+                                                    <i class="far fa-clock"></i>
+                                                    <span>@message.Timestamp</span>
+                                                </span>
+                                            </div>
+                                            <span class="content">@message.Text</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
                     </div>
-                </li>
-            }
-        </ul>
-    </div>
-    <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform">
-        <input type="hidden" name="chatId" value="@Model.Id" />
-        <input type="hidden" id="currentUser" value="@User.Identity.Name" />
-        <input type="hidden" name="roomId" value="@Model.Id" />
-        <input type="text" name="message" id="message-input" style="display: none;" />
-        <button type="submit">Send</button>
-    </form>
-</div>
+                </div>
+                <div class="col-3" style="border-left:1px solid black">
+                    <h3>Members</h3>
+                    <div id="plist" class="people-list">
+                        <ul class="list-unstyled chat-list mt-2 mb-0">
+                            @foreach (var item in Model.Users)
+                            {
+                                <li class="clearfix" onclick="window.location.href='@Url.Action("CreatePrivateRoom", "Home", new { userId = item.UserId})'">
+                                    <img src="/images/@item.User.Avatar" alt="avatar">
+                                    <div class="about">
+                                        <div class="name">@item.User.DisplayName</div>
+                                        <div class="status"> <i class="fa fa-circle offline"></i></div>
+                                    </div>
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform">
+                <input type="hidden" name="chatId" value="@Model.Id" />
+                <input type="hidden" id="currentUser" value="@User.Identity.Name" />
+                <input type="hidden" name="roomId" value="@Model.Id" />
+                <input type="text" name="message" id="message-input" style="display: none;" />
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="chat">
+            <div class="chat-body">
+                <ul class="list-unstyled" id="msg-list">
+                    @foreach (var message in Model.Messages)
+                    {
+                        <li>
+                            <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
+                                <div class="left-side">
+                                    <img src="/images/@message.User.Avatar" class="message-avatar" />
+                                </div>
+                                <div class="message-content d-flex flex-column">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="author">@message.User.DisplayName</span>
+                                        <span class="timestamp">
+                                            <i class="far fa-clock"></i>
+                                            <span>@message.Timestamp</span>
+                                        </span>
+                                    </div>
+                                    <span class="content">@message.Text</span>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform">
+                <input type="hidden" name="chatId" value="@Model.Id" />
+                <input type="hidden" id="currentUser" value="@User.Identity.Name" />
+                <input type="hidden" name="roomId" value="@Model.Id" />
+                <input type="text" name="message" id="message-input" style="display: none;" />
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    }
+
+
 </div>
 
 
