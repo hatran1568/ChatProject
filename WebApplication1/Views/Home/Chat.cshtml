@@ -354,7 +354,7 @@
                 var mainDiv = this.getElementsByTagName('div')[0];
                 var userName = mainDiv.getElementsByTagName('div')[0].innerHTML;
                 if (userName.localeCompare(userAdded.UserName) == 0) {
-                    $('#peopleList').remove(this);
+                    this.remove();
                 }
             });
             var clearFix = document.createElement('li');
@@ -374,7 +374,8 @@
             about.appendChild(userName);
             var displayName = document.createElement('div');
             displayName.className = "name";
-            about.appendChild(DisplayName);
+            displayName.innerHTML = userAdded.DisplayName;
+            about.appendChild(displayName);
             var status = document.createElement('div');
             status.className = "status";
             var statusIcon = document.createElement('i');
@@ -382,7 +383,7 @@
             status.appendChild(statusIcon);
             about.appendChild(status);
             clearFix.appendChild(about);
-            peopleList.appendChild(clearFix);
+            peopleList.prepend(clearFix);
         });
 
         connection.on("UserRemoved", function (userJson) {
@@ -391,7 +392,6 @@
             $('#peopleList').children('li').each(function () {
                 var mainDiv = this.getElementsByTagName('div')[0];
                 var userName = mainDiv.getElementsByTagName('div')[0].innerHTML;
-                alert(userName.localeCompare(userAdded.UserName));
                 if (userName.localeCompare(userAdded.UserName) == 0) {
                     this.remove();
                 }
