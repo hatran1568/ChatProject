@@ -67,12 +67,27 @@
                         <ul class="list-unstyled chat-list mt-2 mb-0">
                             @foreach (var item in Model.Users)
                             {
-                                <li class="clearfix"  onclick = "window.location.href='@Url.Action("CreatePrivateRoom", "Home", new { userId = item.UserId})'"  > <img src="/images/@item.User.Avatar" alt="avatar">
-                                    <div class="about">
-                                        <div class="name">@item.User.DisplayName</div>
-                                        <div class="status"> <i class="fa fa-circle offline"></i></div>
-                                    </div>
-                                </li>
+                                @if (!item.UserId.Equals(userId))
+                                {
+                                    <li class="clearfix" onclick="window.location.href='@Url.Action("CreatePrivateRoom", "Home", new { userId = item.UserId})'">
+                                        <img src="/images/@item.User.Avatar" alt="avatar">
+                                        <div class="about">
+                                            <div class="name">@item.User.DisplayName</div>
+                                            <div class="status"> <i class="fa fa-circle offline"></i></div>
+                                        </div>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="clearfix">
+                                        <img src="/images/@item.User.Avatar" alt="avatar">
+                                        <div class="about">
+                                            <div class="name">@item.User.DisplayName</div>
+                                            <div class="status"> <i class="fa fa-circle offline"></i></div>
+                                        </div>
+                                    </li>
+                                }
+
                             }
 
                         </ul>
