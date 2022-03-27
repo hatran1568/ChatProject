@@ -28,7 +28,7 @@
             <div id="userResult">
                 @foreach (var chat in Model)
                 {
-                    <a class="room-button" asp-controller="Home" asp-action="JoinRoom" asp-route-id="@chat.Id">
+                    <a class="room-button" asp-controller="Chat" asp-action="JoinRoom" asp-route-id="@chat.Id">
                         @chat.Name
                     </a>
                 }

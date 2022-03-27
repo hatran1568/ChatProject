@@ -60,7 +60,7 @@ body {
     box-shadow: 0 1px 3px 1px #a763f1;
     background-color: #be73fe;
     text-align: center;
-    width: 200px;
+    max-width: 200px;
     padding: 10px;
     overflow: hidden;
 }

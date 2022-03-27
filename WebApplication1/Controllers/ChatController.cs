@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,36 @@ namespace ChatProject.Controllers
 
             return Ok();
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> JoinRoom(int id, [FromServices] AppDbContext _ctx, [FromServices] UserManager<User> _userManager)
+        {
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+            Chat chats = _ctx.Chats
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.Id == id);
+            if (chats.Users.FirstOrDefault(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value) != null)
+            {
+                return RedirectToAction("Chat", new { id = id });
+            }
+            var chatUser = new ChatUser
+            {
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                ChatId = id
+            };
+            _ctx.ChatUsers.Add(chatUser);
+            var msg = new Message
+            {
+                ChatID = id,
+                Text = user.DisplayName + " has joined the group.",
+                Timestamp = DateTime.Now,
+                MessageType = MessageType.Notification
+            };
+            _ctx.Messages.Add(msg);
+            await _ctx.SaveChangesAsync();
+            await _chat.Clients.Groups(id.ToString()).SendAsync("NewUserJoined", msg.Text);
+            return RedirectToAction("Chat","Home", new { id = id });
+        }
         [HttpPost("[action]/{connectionId}/{roomId}")]
         public async Task<IActionResult> LeaveRoom(string connectionId, string roomId, [FromServices] UserManager<User> _userManager)
         {
@@ -44,6 +75,28 @@ namespace ChatProject.Controllers
             string userJson = JsonSerializer.Serialize(user);
             await _chat.Clients.Groups(roomId).SendAsync("UserRemoved", userJson);
             return Ok();
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> LeaveRoom(int id, [FromServices] AppDbContext _ctx, [FromServices] UserManager<User> _userManager)
+        {
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+            Chat chats = _ctx.Chats
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.Id == id);
+                var msg = new Message
+                {
+                    ChatID = id,
+                    Text = user.DisplayName + " has left the group.",
+                    Timestamp = DateTime.Now,
+                    MessageType = MessageType.Notification
+                };
+            _ctx.Messages.Add(msg);
+            var chatUser = _ctx.ChatUsers.Where(x => (x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value && x.ChatId == id)).FirstOrDefault();
+                _ctx.ChatUsers.Remove(chatUser);
+                await _ctx.SaveChangesAsync();
+                await _chat.Clients.Groups(id.ToString()).SendAsync("UserLeft", msg.Text);
+            return RedirectToAction("Index", "Home");
         }
         [HttpPost("[action]")]
         public async Task<IActionResult> SendMessage(

@@ -181,7 +181,7 @@
     </form>
 </div>
 <div class="modal" id="leave-room-modal">
-    <form asp-controller="Home" asp-action="LeaveRoom" asp-route-id="@Model.Id" class="modal-body" onsubmit="leaveRoom()">
+    <form asp-controller="Chat" asp-action="LeaveRoom" asp-route-id="@Model.Id" class="modal-body" onsubmit="leaveRoom()">
         <button type="button" class="close" onclick="closeLeaveModal()">X</button>
         <header>Leave Room</header>
         <div>
@@ -246,6 +246,34 @@
                     $("#partialDiv").html(data);
             }
         })
+        });
+        connection.on("UserLeft", function (data) {
+            console.log("user left notified");
+            var div = document.createElement("div");
+            div.appendChild(document.createTextNode(data));
+            div.style.color = "dimgrey";
+            div.style.textAlign = "center";
+            div.style.fontSize = "12px";
+            div.style.margin = "10px";
+            var li = document.createElement("li")
+            li.appendChild(div)
+            var list = document.getElementById("msg-list")
+            list.appendChild(li);
+            $(".chat-body").animate({ scrollTop: $(".chat-body")[0].scrollHeight }, 500);
+        });
+        connection.on("NewUserJoined", function (data) {
+            console.log("user joined notified");
+            var div = document.createElement("div");
+            div.appendChild(document.createTextNode(data));
+            div.style.color = "dimgrey";
+            div.style.textAlign = "center";
+            div.style.fontSize = "12px";
+            div.style.margin = "10px";
+            var li = document.createElement("li")
+            li.appendChild(div)
+            var list = document.getElementById("msg-list")
+            list.appendChild(li);
+            $(".chat-body").animate({ scrollTop: $(".chat-body")[0].scrollHeight }, 500);
         });
         connection.on("ReceiveMessage", function (data, sender, date) {
             console.log("messagereceived!")
