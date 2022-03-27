@@ -323,8 +323,40 @@
                     newStatus.className = "fa fa-circle offline";
                     statusDiv.appendChild(newStatus);
                 }
-                
+
             });
         });
+
+        connection.on("UserAdded", function (userJson) {
+            var userAdded = JSON.parse(userJson);
+            var peopleList = document.getElementById("peopleList");
+            var clearFix = document.createElement('li');
+            clearFix.className = "clearfix";
+            if (userAdded.id != @userId) {
+                clearFix.onclick = function () {
+                    window.location.href = '/Home/CreatePrivateRoom?userId=' + userAdded.id;
+                }
+            }
+            var img = document.createElement('img');
+            img.src = "/images/" + userAdded.Avatar;
+            clearFix.appendChild(img);
+            var about = document.createElement('div');
+            about.className = "about";
+            var userName = document.createElement('div');
+            userName.style = "display: none";
+            userName.innerHTML = userAdded.userName;
+            about.appendChild(userName);
+            var displayName = document.createElement('div');
+            displayName.className = "name";
+            about.appendChild(displayName);
+            var status = document.createElement('div');
+            status.className = "status";
+            var statusIcon = document.createElement('i');
+            statusIcon.className = "fa fa-circle online";
+            status.appendChild(statusIcon);
+            about.appendChild(status);
+            clearFix.appendChild(about);
+            peopleList.appendChild(clearFix);
+        })
     </script>
 }
