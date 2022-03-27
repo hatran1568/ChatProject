@@ -88,7 +88,7 @@
                                         <div class="about">
                                             <div style="display:none;">@item.User.UserName</div>
                                             <div class="name">@item.User.DisplayName</div>
-                                            <div class="status"> <i class="fa fa-circle online"></i></div>
+                                            <div class="status"> <i class="fa fa-circle offline"></i></div>
                                         </div>
                                     </li>
                                 }
@@ -365,6 +365,7 @@
 
         connection.on("UserJoined", function (connectedUsers) {
             var usersJson = JSON.parse(connectedUsers);
+            //alert(usersJson);
             $('#peopleList').children('li').each(function () {
                 var mainDiv = this.getElementsByTagName('div')[0];
                 var statusDiv = mainDiv.getElementsByTagName('div')[2];
@@ -383,6 +384,57 @@
                     statusDiv.appendChild(newStatus);
                 }
 
+            });
+        });
+
+        connection.on("UserAdded", function (userJson) {
+            var userAdded = JSON.parse(userJson);
+            var peopleList = document.getElementById("peopleList");
+            $('#peopleList').children('li').each(function () {
+                var mainDiv = this.getElementsByTagName('div')[0];
+                var userName = mainDiv.getElementsByTagName('div')[0].innerHTML;
+                if (userName.localeCompare(userAdded.UserName) == 0) {
+                    this.remove();
+                }
+            });
+            var clearFix = document.createElement('li');
+            clearFix.className = "clearfix";
+            clearFix.onclick = function () {
+                    window.location.href = '/Home/CreatePrivateRoom?userId=' + userAdded.Id;
+            }
+
+            var img = document.createElement('img');
+            img.src = "/images/" + userAdded.Avatar;
+            clearFix.appendChild(img);
+            var about = document.createElement('div');
+            about.className = "about";
+            var userName = document.createElement('div');
+            userName.style = "display: none";
+            userName.innerHTML = userAdded.UserName;
+            about.appendChild(userName);
+            var displayName = document.createElement('div');
+            displayName.className = "name";
+            displayName.innerHTML = userAdded.DisplayName;
+            about.appendChild(displayName);
+            var status = document.createElement('div');
+            status.className = "status";
+            var statusIcon = document.createElement('i');
+            statusIcon.className = "fa fa-circle online";
+            status.appendChild(statusIcon);
+            about.appendChild(status);
+            clearFix.appendChild(about);
+            peopleList.prepend(clearFix);
+        });
+
+        connection.on("UserRemoved", function (userJson) {
+            var userAdded = JSON.parse(userJson);
+            var peopleList = document.getElementById("peopleList");
+            $('#peopleList').children('li').each(function () {
+                var mainDiv = this.getElementsByTagName('div')[0];
+                var userName = mainDiv.getElementsByTagName('div')[0].innerHTML;
+                if (userName.localeCompare(userAdded.UserName) == 0) {
+                    this.remove();
+                }
             });
         });
     </script>

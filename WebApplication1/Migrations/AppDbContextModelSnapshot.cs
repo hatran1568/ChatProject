@@ -65,7 +65,7 @@ namespace ChatProject.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("MessageType")
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
