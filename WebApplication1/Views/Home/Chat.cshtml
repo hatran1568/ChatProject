@@ -156,7 +156,7 @@
     </form>
 </div>
 <div class="modal" id="leave-room-modal">
-    <form asp-controller="Home" asp-action="Leave" class="modal-body">
+    <form asp-controller="Home" asp-action="LeaveRoom" asp-route-id="@Model.Id" class="modal-body" onsubmit="leaveRoom()">
         <button type="button" class="close" onclick="closeLeaveModal()">X</button>
         <header>Leave Room</header>
         <div>
@@ -252,23 +252,6 @@
             var list = document.getElementById("msg-list")
             list.appendChild(li)
             $(".chat-body").animate({ scrollTop: $(".chat-body")[0].scrollHeight }, 500);
-            //scrollToBottom()
-            //document.querySelector('.msg-list').append(li)
-
-            //var message = document.createElement("div")
-            //message.classList.add("message");
-            //var header = document.createElement("header")
-            //header.appendChild(document.createTextNode(sender))
-            //var p = document.createElement("p")
-            //p.appendChild(document.createTextNode(data.text))
-            //var footer = document.createElement("footer")
-            //footer.appendChild(document.createTextNode(date))
-
-            //message.appendChild(header);
-            //message.appendChild(p);
-            //message.appendChild(footer);
-
-            //document.querySelector('.chat-body').append(message);
         })
 
         var joinRoom = function () {
@@ -281,7 +264,16 @@
                     console.error("Failed to join room!", err);
                 })
         }
-
+        var leaveRoom = function () {
+            var url = '/Chat/LeaveRoom/' + _connectionId + '/@Model.Id';
+            axios.post(url, null)
+                .then(res => {
+                    console.log("Room Left!", res);
+                })
+                .catch(err => {
+                    console.error("Failed to leave room!", err);
+                })
+        }
         connection.start()
             .then(function () {
                 connection.invoke("getConnectionId")
