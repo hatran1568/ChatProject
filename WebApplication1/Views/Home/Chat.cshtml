@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
 <div class="main">
-
+    <div style="display:none" id="currentLoggedDiv">@userId</div>
     @if (User.Identity.IsAuthenticated)
     {
         <div id="partialDiv" class="side-menu">
@@ -491,10 +491,12 @@
             });
             var clearFix = document.createElement('li');
             clearFix.className = "clearfix";
-            clearFix.onclick = function () {
+            if (userAdded.Id != document.getElementById("currentLoggedDiv").innerHTML) {
+                clearFix.onclick = function () {
                     window.location.href = '/Home/CreatePrivateRoom?userId=' + userAdded.Id;
+                }
             }
-
+            
             var img = document.createElement('img');
             img.src = "/images/" + userAdded.Avatar;
             clearFix.appendChild(img);
