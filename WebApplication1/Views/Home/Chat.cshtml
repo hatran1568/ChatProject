@@ -6,18 +6,6 @@
 @{
     var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 }
-@*<div class="chat-body">
-
-        @foreach (var message in Model.Messages)
-        {
-
-            <div class="message">
-                <header>@message.User.DisplayName</header>
-                <p>@message.Text</p>
-                <footer>@message.Timestamp</footer>
-            </div>
-        }
-    </div>*@
 
 <link href="~/css/emojionearea.min.css" rel="stylesheet" />
 <link href="~/css/UserList.css" rel="stylesheet" />
