@@ -40,7 +40,7 @@
                         <ul class="list-unstyled" id="msg-list">
                             @foreach (var message in Model.Messages)
                             {
-                                if (message.Type == MessageType.Text)
+                                if (message.MessageType == MessageType.Text)
                                 {
 
                                     <li>
@@ -61,7 +61,7 @@
                                         </div>
                                     </li>
                                 }
-                                else if (message.Type == MessageType.Notification)
+                                else if (message.MessageType == MessageType.Notification)
                                 {
 
                                     <li>
@@ -86,7 +86,7 @@
                                         <div class="about">
                                             <div style="display:none;">@item.User.UserName</div>
                                             <div class="name">@item.User.DisplayName</div>
-                                            <div class="status"> <i class="fa fa-circle online"></i></div>
+                                            <div class="status"> <i class="fa fa-circle offline"></i></div>
                                         </div>
                                     </li>
                                 }
@@ -124,7 +124,7 @@
                 <ul class="list-unstyled" id="msg-list">
                     @foreach (var message in Model.Messages)
                     {
-                        if (message.Type == MessageType.Text)
+                        if (message.MessageType == MessageType.Text)
                         {
                             <li>
                                 <div class="chat-message d-flex @(message.User.UserName.Equals(User.Identity.Name) ? "ismine" : "isother")">
@@ -325,6 +325,7 @@
 
         connection.on("UserJoined", function (connectedUsers) {
             var usersJson = JSON.parse(connectedUsers);
+            alert(usersJson);
             $('#peopleList').children('li').each(function () {
                 var mainDiv = this.getElementsByTagName('div')[0];
                 var statusDiv = mainDiv.getElementsByTagName('div')[2];
@@ -376,6 +377,6 @@
             about.appendChild(status);
             clearFix.appendChild(about);
             peopleList.appendChild(clearFix);
-        })
+        });
     </script>
 }
