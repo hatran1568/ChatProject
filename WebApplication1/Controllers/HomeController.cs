@@ -10,6 +10,7 @@ using ChatProject.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace ChatProject.Controllers
 {
@@ -18,14 +19,16 @@ namespace ChatProject.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private AppDbContext _ctx;
-
+       
         public IActionResult Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chats = _ctx.Chats
-                .Include(x => x.Users)
-                .Where(x => !x.Users.Any(y => y.UserId == userId))
-                .ToList();
+                           .Include(x => x.Users)
+                           .ThenInclude(x => x.User)
+                           .Where(x => x.Type == ChatType.Room)
+                           .ToList();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ViewData["currentUser"] = _ctx.Users.FirstOrDefault(x => x.Id == userId).UserName;
             return View(chats);
         }
 
@@ -83,6 +86,8 @@ namespace ChatProject.Controllers
                 .Include(x => x.Messages)
                 .ThenInclude(x => x.User)
                 .FirstOrDefault(x => x.Id == id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ViewData["currentUser"] = _ctx.Users.FirstOrDefault(x => x.Id == userId).UserName;
             if (chat != null)
             {
                 ViewBag.ChatType = chat.Type;
@@ -171,6 +176,8 @@ namespace ChatProject.Controllers
                                             && x.Users
                                             .Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
                             .ToList();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ViewData["currentUser"] = _ctx.Users.FirstOrDefault(x => x.Id == userId).UserName;
             return View(chats);
         }
 

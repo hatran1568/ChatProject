@@ -23,6 +23,13 @@ body {
         padding-top: 0.8rem;
         padding-left: 1rem;
     }
+    .navbar .navbar-span {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        padding-top: 0.8rem;
+        padding-left: 1rem;
+    }
 
 .main {
     background-color: red;

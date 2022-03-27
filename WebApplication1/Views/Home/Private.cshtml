@@ -25,7 +25,14 @@
                 </div>
             </div>
             <div id="userResult">
-
+                @foreach (var chat in Model)
+                {
+                <a class="room-button" asp-controller="Home" asp-action="Chat" asp-route-id="@chat.Id">
+                    
+                    @chat.Users.FirstOrDefault(x => x.UserId != userId).User.DisplayName
+                    
+                </a>
+                }
             </div>
 
         </div>
@@ -63,12 +70,13 @@
 
                 for (var x = 0; x < data.length; x++) {
                     var curId = data[x].id;
-                    var user = document.createElement("button");
+                    var user = document.createElement("a");
                     user.innerHTML = data[x].displayName;
                     user.className = "room-button";
-                    user.onclick = function () {
+                    user.href = "/Home/CreatePrivateRoom?userId=" + curId;
+                    @*user.onclick = function () {
                         window.location.href = "/Home/CreatePrivateRoom?userId=" + curId;
-                    }
+                    }*@
                     userResult.appendChild(user);
                 }
             }
