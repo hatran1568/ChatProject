@@ -8,3 +8,4 @@ createRoomBtn.addEventListener('click', function () {
 function closeModal() {
     crateRoomModal.classList.remove('modal-active')
 }
+

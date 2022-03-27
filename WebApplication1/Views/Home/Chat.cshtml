@@ -21,10 +21,22 @@
     @if (ViewBag.ChatType == ChatType.Room)
     {
         <div class="chat">
-            <div class="row"></div>
+
             <div class="main-body">
                 <div class="col-9">
+                    <div class="row">
+                        <h5 id="joinedRoom">@Model.Name</h5>
+                        <div class="room-actions">
+                            <button id="rename-room-btn" type="button" class="btn btn-link text-secondary px-1">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button id="leave-room-btn" type="button" class="btn btn-link text-secondary px-1">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
                     <div class="chat-body">
+
                         <ul class="list-unstyled" id="msg-list">
                             @foreach (var message in Model.Messages)
                             {
@@ -131,12 +143,40 @@
 
 </div>
 
+<div class="modal" id="rename-room-modal">
+    <form asp-controller="Home" asp-action="Rename" class="modal-body">
+        <button type="button" class="close" onclick="closeRenameModal()">X</button>
+        <header>Rename Room</header>
+        <div>
+            <input name="name">
+        </div>
+        <footer>
+            <button onclick="closeRenameModal()">Create</button>
+        </footer>
+    </form>
+</div>
+<div class="modal" id="leave-room-modal">
+    <form asp-controller="Home" asp-action="Leave" class="modal-body">
+        <button type="button" class="close" onclick="closeLeaveModal()">X</button>
+        <header>Leave Room</header>
+        <div>
+            <p>Are you sure you want to leave this Chat Room?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeLeaveModal()">Close</button>
+            <button class="btn btn-danger" onclick="closeLeaveModal()">Leave</button>
+        </div>
+    </form>
+</div>
+
 
 
 @section scripts{
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="~/js/Chat.js"></script>
+
     <script src="~/js/emojionearea.min.js"></script>
     <script>
         $(document).ready(function () {

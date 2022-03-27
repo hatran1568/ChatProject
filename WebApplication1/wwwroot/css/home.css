@@ -200,6 +200,7 @@ body {
     flex-grow: 1;
     display: flex;
 }
+
 .chat-active {
     background-color: white;
     color: #aa22f2;
