@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220327155022_Type")]
-    partial class Type
+    [Migration("20220327154619_MessageType")]
+    partial class MessageType
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
