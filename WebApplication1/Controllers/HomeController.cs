@@ -79,6 +79,20 @@ namespace ChatProject.Controllers
             await _ctx.SaveChangesAsync();
             return RedirectToAction("Chat", new { id = id });
         }
+        [HttpPost]
+        public async Task<IActionResult> LeaveRoom(int id)
+        {
+            Chat _chat = _ctx.Chats
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.Id == id);
+            if (_chat.Users.FirstOrDefault(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value) != null)
+            {
+                var chatUser = _ctx.ChatUsers.Where(x => (x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value && x.ChatId == id)).FirstOrDefault();
+                _ctx.ChatUsers.Remove(chatUser);
+                await _ctx.SaveChangesAsync();
+            }
+            return RedirectToAction("Index");
+        }
         [HttpGet("{id}")]
         public IActionResult Chat(int id)
         {
