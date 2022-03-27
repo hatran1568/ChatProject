@@ -200,3 +200,6 @@ body {
     flex-grow: 1;
     display: flex;
 }
+.modal-backdrop{
+    z-index: 0;
+}
