@@ -1,12 +1,15 @@
 ﻿using ChatProject.Hubs;
 using ChatProject.Model;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
@@ -102,25 +105,55 @@ namespace ChatProject.Controllers
         public async Task<IActionResult> SendMessage(
             string message, 
             int chatId,
-            string roomId
-            ,[FromServices] AppDbContext ctx,
+            string roomId, IFormFile image, [FromServices] IHostingEnvironment hostingEnvironment
+            , [FromServices] AppDbContext ctx,
             [FromServices] UserManager<User> _userManager)
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
-            var msg = new Message
+            if (message.Trim().Length > 0)
             {
-                ChatID = chatId,
-                Text = message,
-                UserID = userId,
-                Timestamp = DateTime.Now
-            };
-            var date = msg.Timestamp.ToString("dd/MM/yyyy hh:mm:ss");
-            ctx.Messages.Add(msg);
-            await ctx.SaveChangesAsync();
-            await _chat.Clients.Groups(roomId)
-                .SendAsync("ReceiveMessage", msg, user, date);
-            return Ok();
+                
+                var msg = new Message
+                {
+                    ChatID = chatId,
+                    Text = message,
+                    UserID = userId,
+                    Timestamp = DateTime.Now,
+                    MessageType = MessageType.Text
+                };
+                var date = msg.Timestamp.ToString("dd/MM/yyyy hh:mm:ss");
+                ctx.Messages.Add(msg);
+                await ctx.SaveChangesAsync();
+                await _chat.Clients.Groups(roomId)
+                    .SendAsync("ReceiveMessage", msg, user, date);
+            }
+            
+            
+            if (image != null)
+            {
+                string uniqueFileName = null;
+                string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+                using (var fs = new FileStream(Path.Combine(uploadsFolder, uniqueFileName), FileMode.Create))
+                {
+                    await image.CopyToAsync(fs);
+                }
+                var imagemsg = new Message
+                {
+                    ChatID = chatId,
+                    Text = uniqueFileName,
+                    UserID = userId,
+                    Timestamp = DateTime.Now,
+                    MessageType = MessageType.Image
+                };
+                var imagemsgDate = imagemsg.Timestamp.ToString("dd/MM/yyyy hh:mm:ss");
+                ctx.Messages.Add(imagemsg);
+                await ctx.SaveChangesAsync();
+                await _chat.Clients.Groups(roomId)
+                    .SendAsync("ReceiveMessage", imagemsg, user, imagemsgDate);
+            }
+                return Ok();
         }
 
         [HttpPost("[action]")]

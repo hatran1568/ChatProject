@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ChatProject.Controllers
 {
@@ -86,20 +89,42 @@ namespace ChatProject.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public async Task<IActionResult> CreateMessage(int chatId, string message)
+        public async Task<IActionResult> CreateMessage(int chatId, string message, IFormFile image, [FromServices] IHostingEnvironment hostingEnvironment)
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var msg = new Message
+            if (image == null)
             {
-                ChatID = chatId,
-                Text = message,
-                UserID = userId,
-                Timestamp = DateTime.Now,
-                MessageType = MessageType.Notification
-            };
-            _ctx.Messages.Add(msg);
-            await _ctx.SaveChangesAsync();
-            return RedirectToAction("Chat", new { id = chatId });
+                var msg = new Message
+                {
+                    ChatID = chatId,
+                    Text = message,
+                    UserID = userId,
+                    Timestamp = DateTime.Now,
+                    MessageType = MessageType.Text
+                };
+                _ctx.Messages.Add(msg);
+                await _ctx.SaveChangesAsync();
+                return RedirectToAction("Chat", new { id = chatId });
+            } else
+            {
+                string uniqueFileName = null;
+                string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+                using (var fs = new FileStream(Path.Combine(uploadsFolder, uniqueFileName), FileMode.Create))
+                {
+                    await image.CopyToAsync(fs);
+                }
+                var msg = new Message
+                {
+                    ChatID = chatId,
+                    Text = message,
+                    UserID = userId,
+                    Timestamp = DateTime.Now,
+                    MessageType = MessageType.Image
+                };
+                return RedirectToAction("Chat", new { id = chatId });
+            }
+
         }
         public IActionResult Find()
         {
