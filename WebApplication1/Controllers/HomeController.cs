@@ -185,13 +185,16 @@ namespace ChatProject.Controllers
 
         public IActionResult Private()
         {
-            var chats = _ctx.Chats
+            var chats = _ctx.Users
+                       .Where(x => x.Id != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                       .ToList();
+            /*var chats = _ctx.Chats
                             .Include(x => x.Users)
                             .ThenInclude(x => x.User)
                             .Where(x => x.Type == ChatType.Private
                                             && x.Users
                                             .Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                            .ToList();
+                            .ToList();*/
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             ViewData["currentUser"] = _ctx.Users.FirstOrDefault(x => x.Id == userId).UserName;
             return View(chats);

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Chat>
+﻿@model IEnumerable<User>
 @{
     Layout = "Shared/_LayoutHome.cshtml";
 }
@@ -28,10 +28,10 @@
             <div id="userResult">
                 @foreach (var chat in Model)
                 {
-                <a class="room-button" asp-controller="Home" asp-action="Chat" asp-route-id="@chat.Id">
+                <a class="room-button" asp-controller="Home" asp-action="CreatePrivateRoom" asp-route-userId="@chat.Id">
                     
-                    @chat.Users.FirstOrDefault(x => x.UserId != userId).User.DisplayName
-                    
+                    @*@chat.Users.FirstOrDefault(x => x.UserId != userId).User.DisplayName*@
+                    @chat.DisplayName
                 </a>
                 }
             </div>
