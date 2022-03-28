@@ -25,17 +25,15 @@
         <div class="chat">
 
             <div class="main-body">
-                <div class="col-9">
-                    <div class="row">
-                        <h5 id="joinedRoom">@Model.Name</h5>
-                        <div class="room-actions">
-                            <button id="rename-room-btn" type="button" class="btn btn-link text-secondary px-1">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <button id="leave-room-btn" type="button" class="btn btn-link text-secondary px-1">
-                                <i class="fa fa-sign-out" aria-hidden="true"></i>
-                            </button>
-                        </div>
+                <div class="col-9" style="margin: 0; padding: 0">
+                    <div class="row" style="background-color: #cb9bfb2b; padding: 10px;">
+                        <h5 id="joinedRoom" class="col-10">@Model.Name</h5>
+                        <button id="rename-room-btn" type="button" class="btn btn-link text-secondary px-1 col-1">
+                            <i class="fa fa-edit" style="font-size: 27px"></i>
+                        </button>
+                        <button id="leave-room-btn" type="button" class="btn btn-link text-secondary px-1 col-1">
+                            <i class="fa fa-sign-out" style="font-size: 27px"></i>
+                        </button>
                     </div>
                     <div class="chat-body">
 
@@ -86,7 +84,7 @@
                                                     </span>
                                                 </div>
                                                 <span class="content">
-                                                    <img style="max-width:400px" src="/images/@message.Text" />
+                                                    <img style="max-width:340px" src="/images/@message.Text" />
                                                 </span>
                                             </div>
                                         </div>
@@ -96,6 +94,18 @@
                             }
                         </ul>
                     </div>
+
+                    <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform" enctype="multipart/form-data">
+                        <input type="hidden" name="chatId" value="@Model.Id" />
+                        <input type="hidden" id="currentUser" value="@User.Identity.Name" />
+                        <input type="hidden" name="roomId" value="@Model.Id" />
+                        <input type="text" name="message" id="message-input" />
+                        <label for="file-upload" class="custom-file-upload">
+                            <i class="fa fa-cloud-upload"></i>
+                        </label>
+                        <input id="file-upload" style="display:none;" type="file" name="image" accept="image/*" onchange="sendMessage()" />
+                        <button type="submit" class="btn btn-info btn-send">Send</button>
+                    </form>
                 </div>
                 <div class="col-3" style="border-left:1px solid black">
                     <h3>Members</h3>
@@ -132,17 +142,6 @@
                     </div>
                 </div>
             </div>
-            <form class="chat-input" asp-controller="Home" asp-action="CreateMessage" onsubmit="sendMessage()" id="chatform" enctype="multipart/form-data">
-                <input type="hidden" name="chatId" value="@Model.Id" />
-                <input type="hidden" id="currentUser" value="@User.Identity.Name" />
-                <input type="hidden" name="roomId" value="@Model.Id" />
-                <input type="text" name="message" id="message-input" />
-                <label for="file-upload" class="custom-file-upload">
-                    <i class="fa fa-cloud-upload"></i>
-                </label>
-                <input id="file-upload" style="display:none;" type="file" name="image" accept="image/*" onchange="sendMessage()" />
-                <button type="submit" class="btn btn-info btn-send">Send</button>
-            </form>
         </div>
     }
     else
